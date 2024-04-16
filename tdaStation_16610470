@@ -66,3 +66,18 @@ s7
 s8
 (define s9 (section e6 e10 15  250))
 s9
+
+; TDA line - constructor
+
+; Dom = id (int) X name (string) X rail-type (string) X section* (* señala que se pueden agregar 0 o más tramos)
+; Rec = line
+
+(define line
+  (lambda (id name rail-type . section)
+    (list id name rail-type section)))
+
+; creando nuevas lineas
+(define l0 (line 0 "Línea 0" "UIC 60 ASCE"))
+l0
+(define l1 (line 1 "Línea 1" "100 R.E." s0 s1 s2 s3 s5 s7 s8 s9))
+l1
