@@ -1,6 +1,6 @@
 #lang racket
 
-; TDA station - constructor
+;; TDA station - constructor
 
 ; Dom: id (int) X name (String)  X type (String) X stop-time (positive integer)
 ; Rec: station
@@ -36,7 +36,8 @@ e9
 (define e10 (station 10 "Los Dominicos" "t" 60))
 e10
 
-; TDA section - constructor
+
+;; TDA section - constructor
 
 ; Dom: point1 (station)  X point2 (station) X distance (positive-number) X cost (positive-number U {0}).
 ; Rec: section
@@ -67,7 +68,8 @@ s8
 (define s9 (section e6 e10 15  250))
 s9
 
-; TDA line - constructor
+
+;; TDA line - constructor
 
 ; Dom = id (int) X name (string) X rail-type (string) X section* (* señala que se pueden agregar 0 o más tramos)
 ; Rec = line
@@ -82,7 +84,8 @@ l0
 (define l1 (line 1 "Línea 1" "100 R.E." s0 s1 s2 s3 s5 s7 s8 s9))
 l1
 
-; TDA line - otras funciones
+
+;; TDA line - otras funciones
 
 ; Dom = line (line)
 ; Rec = positive-number
@@ -101,3 +104,58 @@ l1
 
 ; Calculando distancia l1
 (line-lenght l1)
+
+
+;; TDA line - otras funciones
+
+; Dom = line (line) X station1-name (String) X station2-name (String)
+; Rec = positive-number
+
+; Obtener de seccion con station1-name, distancia 1
+; Obtener de seccion con station2-name, distancia 2
+; Calcular diferencia y entregar numero
+
+;(define line-section-length
+;  (lambda (line station1-name station2-name)
+;    (
+
+; Calculando distancia entre "USACH" y "Los Heroes"
+; (line-section-length l1 “USACH” “Los Héroes”)
+
+
+;; TDA line - otras funciones
+
+; Dom = line (line)
+; Rec = positive-number U {0}
+
+(define section-get-cost
+  (lambda (section)
+    (last section)))
+
+; DECLARATIVO (Test)
+(define line-cost-de
+  (lambda (line)
+    (apply +(map (lambda (x) (section-get-cost x)) (line-get-section line)))))
+    ;(map (lambda (x) (section-get-cost x)) (line-get-section line))))
+
+(line-cost-de l1)
+
+; Recursividad natural
+(define line-cost
+  (lambda (line)
+    (define line-cost-map-int
+      (lambda (fn lst)
+        (cond
+          [(null? lst) null]
+          [else (cons (fn (car lst)) (line-cost-map-int fn (cdr lst)))])))
+    (line-cost-map-int (lambda (x) (section-get-cost x)) (line-get-section line))))
+
+(define line-cost-apply
+  (lambda (fn lst)
+    (cond
+      [(null? lst) null]
+      [else (if (null? (cdr lst))
+                (car lst)
+                (fn (car lst) (line-cost-apply fn (cdr lst))))])))
+
+(line-cost-apply + (line-cost l1))
