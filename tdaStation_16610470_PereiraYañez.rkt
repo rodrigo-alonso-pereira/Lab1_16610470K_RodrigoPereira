@@ -81,3 +81,23 @@ s9
 l0
 (define l1 (line 1 "Línea 1" "100 R.E." s0 s1 s2 s3 s5 s7 s8 s9))
 l1
+
+; TDA line - otras funciones
+
+; Dom = line (line)
+; Rec = positive-number
+
+(define line-get-section
+  (lambda (line)
+    (last line)))
+
+(define section-get-distance
+  (lambda (section)
+    (third section)))
+
+(define line-lenght
+  (lambda (line)
+    (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
+
+; Calculando distancia l1
+(line-lenght l1)
