@@ -1,6 +1,6 @@
 #lang racket
 
-;; TDA station - constructor
+;; Req 2: TDA station - constructor
 
 ; Dom: id (int) X name (String)  X type (String) X stop-time (positive integer)
 ; Rec: station
@@ -37,7 +37,7 @@ e9
 e10
 
 
-;; TDA section - constructor
+;; Req 3: TDA section - constructor
 
 ; Dom: point1 (station)  X point2 (station) X distance (positive-number) X cost (positive-number U {0}).
 ; Rec: section
@@ -69,7 +69,7 @@ s8
 s9
 
 
-;; TDA line - constructor
+;; Req 4: TDA line - constructor
 
 ; Dom = id (int) X name (string) X rail-type (string) X section* (* señala que se pueden agregar 0 o más tramos)
 ; Rec = line
@@ -85,7 +85,7 @@ l0
 l1
 
 
-;; TDA line - otras funciones
+;; Req 5: TDA line - otras funciones
 
 ; Dom = line (line)
 ; Rec = positive-number
@@ -106,7 +106,7 @@ l1
 (line-lenght l1)
 
 
-;; TDA line - otras funciones
+;; Req 6: TDA line - otras funciones
 
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number
@@ -114,6 +114,10 @@ l1
 ; Obtener de seccion con station1-name, distancia 1
 ; Obtener de seccion con station2-name, distancia 2
 ; Calcular diferencia y entregar numero
+
+(define station-get-name
+  (lambda (station)
+    (second station)))
 
 ;(define line-section-length
 ;  (lambda (line station1-name station2-name)
@@ -123,7 +127,7 @@ l1
 ; (line-section-length l1 “USACH” “Los Héroes”)
 
 
-;; TDA line - otras funciones
+;; Req 7: TDA line - otras funciones
 
 ; Dom = line (line)
 ; Rec = positive-number U {0}
@@ -143,26 +147,49 @@ l1
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
+; Calculando el costo de la linea
 (line-cost l1)
 
-
-;; TDA line - otras funciones
+;; Req 8: TDA line - otras funciones
 
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number U {0}
 
-; Obtener seccion con name1
-; Obtener seccion con name2 -> Filter
+; 1er Filtrar para obtener lista con secciones utiles
 ; Obtiene costo 1 + costo 2
 
-
-; Recursividad de Cola
+; Declarativa - Test
 (define line-section-cost
   (lambda (line station1-name station2-name)
-    (define line-section-cost-int
-      (lambda (line station1-name station2-name lst acc)
-        (cond
-          [(null? lst) acc]
-          [else (line-section-cost-int 
+    (filter (lambda (x) (or (or (eq? (station-get-name (first x)) station1-name) (eq? (station-get-name (second x)) station1-name))
+                            (or (eq? (station-get-name (first x)) station2-name) (eq? (station-get-name (second x)) station2-name)))) (line-get-section line))))
+
+; Recursividad de Cola
+;(define line-section-cost
+ ; (lambda (line station1-name station2-name)
+ ;   (define line-section-cost-int
+  ;    (lambda (fn-filter lst acc)
+   ;     (cond
+    ;      [(null? lst) acc]
+     ;     [else (line-section-cost-int
+
+; Calculando el costo entre secciones
+(line-section-cost l1 "USACH" "Los Héroes")
+
+;; Req 9: TDA line - modificador
+
+; Dom = line (line) X section (section)
+; Rec = line
+
+(define line-add-section
+  (lambda (line section)
+    (reverse (cons section (reverse line)))))
+    
+
+; Agregado nuevas secciones a lineas
+(define l2 (line-add-section l0 s0))
+(define l3 (line-add-section l2 s1))
+(define l4 (line-add-section l3 s2))
+(define l5 (line-add-section l4 s3))
 
 
