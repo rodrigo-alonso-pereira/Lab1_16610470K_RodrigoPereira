@@ -132,30 +132,15 @@ l1
   (lambda (section)
     (last section)))
 
-; DECLARATIVO (Test)
-(define line-cost-de
-  (lambda (line)
-    (apply +(map (lambda (x) (section-get-cost x)) (line-get-section line)))))
-    ;(map (lambda (x) (section-get-cost x)) (line-get-section line))))
-
-(line-cost-de l1)
-
 ; Recursividad natural
 (define line-cost
   (lambda (line)
     (define line-cost-map-int
-      (lambda (fn lst)
+      (lambda (fn-map fn-apply lst)
         (cond
-          [(null? lst) null]
-          [else (cons (fn (car lst)) (line-cost-map-int fn (cdr lst)))])))
-    (line-cost-map-int (lambda (x) (section-get-cost x)) (line-get-section line))))
+          [(null? lst) 0]
+          [(null? (cdr lst)) (fn-map (car lst))]
+          [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
+    (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
-(define line-cost-apply
-  (lambda (fn lst)
-    (cond
-      [(null? lst) null]
-      [else (if (null? (cdr lst))
-                (car lst)
-                (fn (car lst) (line-cost-apply fn (cdr lst))))])))
-
-(line-cost-apply + (line-cost l1))
+(line-cost l1)
