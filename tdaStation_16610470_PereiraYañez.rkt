@@ -144,3 +144,25 @@ l1
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
 (line-cost l1)
+
+
+;; TDA line - otras funciones
+
+; Dom = line (line) X station1-name (String) X station2-name (String)
+; Rec = positive-number U {0}
+
+; Obtener seccion con name1
+; Obtener seccion con name2 -> Filter
+; Obtiene costo 1 + costo 2
+
+
+; Recursividad de Cola
+(define line-section-cost
+  (lambda (line station1-name station2-name)
+    (define line-section-cost-int
+      (lambda (line station1-name station2-name lst acc)
+        (cond
+          [(null? lst) acc]
+          [else (line-section-cost-int 
+
+
