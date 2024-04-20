@@ -108,10 +108,12 @@
 ; Dom = line (line)
 ; Rec = positive-number
 
+; Funcion que entrega una seccion de una linea
 (define line-get-section
   (lambda (line)
     (last line)))
 
+; Funcion que entrega una distancia de una seccion
 (define section-get-distance
   (lambda (section)
     (third section)))
@@ -129,10 +131,6 @@
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number
 
-; Obtener de seccion con station1-name, distancia 1
-; Obtener de seccion con station2-name, distancia 2
-; Calcular diferencia y entregar numero
-
 (define station-get-name
   (lambda (station)
     (second station)))
@@ -140,19 +138,20 @@
 (define line-section-length
   (lambda (line station1-name station2-name)
     (define line-section-lenght-int
-      (lambda (lst flag acc)
+      (lambda (lst flag name1 name2 acc)
         (cond
           [(null? lst) acc]
-          [(eq? (car lst) station1-name) (line-section-lenght-int (cdr lst) #t (cons (car lst) acc))]
-          [(eq? (car lst) station2-name) (if flag
-                                             (cons (car lst) acc)
-                                             (line-section-lenght-int (cdr lst) flag acc))]
+          [(eq? (station-get-name (first (car lst))) name1) (line-section-lenght-int (cdr lst) #t name1 name2 (+ (section-get-distance (car lst)) acc))]
+          [(eq? (station-get-name (second (car lst))) name2) (if flag
+                                                               (+ (section-get-distance (car lst)) acc)
+                                                               (line-section-lenght-int (cdr lst) flag name1 name2 acc))]
           [else (if flag
-                    (line-section-lenght-int )
-                    ()
+                    (line-section-lenght-int (cdr lst) flag name1 name2 (+ (section-get-distance (car lst)) acc))
+                    (line-section-lenght-int (cdr lst) flag name1 name2 acc))])))
+    (line-section-lenght-int (line-get-section line) #f station1-name station2-name 0)))
           
 
-;(line-section-length l1 “San Pablo” “Las Rejas”)   ;respuesta es 9.5
+(line-section-length l1 "San Pablo" "Las Rejas") ;respuesta es 9.5
 
 
 ;; Req 7: TDA line - otras funciones
@@ -175,8 +174,8 @@
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
-(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
-(line-cost l2) ;resultado debe ser 0
+;(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
+;(line-cost l2) ;resultado debe ser 0
 
 
 ;; Req 8: TDA line - otras funciones
@@ -190,8 +189,14 @@
 ; Declarativa - Test
 (define line-section-cost
   (lambda (line station1-name station2-name)
-    (filter (lambda (x) (or (or (eq? (station-get-name (first x)) station1-name) (eq? (station-get-name (second x)) station1-name))
-                            (or (eq? (station-get-name (first x)) station2-name) (eq? (station-get-name (second x)) station2-name)))) (line-get-section line))))
+    (filter (lambda (x) (or
+                         (or
+                             (eq? (station-get-name (first x)) station1-name)
+                             (eq? (station-get-name (second x)) station1-name))
+                            (or
+                             (eq? (station-get-name (first x)) station2-name)
+                             (eq? (station-get-name (second x)) station2-name))))
+            (line-get-section line))))
 
 ; Recursividad de Cola
 #|
@@ -205,7 +210,7 @@
 |#
 
 ; Calculando el costo entre secciones
-(line-section-cost l1 "USACH" "Los Héroes")
+;(line-section-cost l1 "USACH" "Los Héroes")
 
 ;; Req 9: TDA line - modificador
 
