@@ -130,7 +130,9 @@
 
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number
+; Recursividad = Cola
 
+; Funcion que entrega el nombre de una estacion
 (define station-get-name
   (lambda (station)
     (second station)))
@@ -158,12 +160,13 @@
 
 ; Dom = line (line)
 ; Rec = positive-number U {0}
+; Recursividad = Natural
 
+; Funcion que entrega el costo de una seccion
 (define section-get-cost
   (lambda (section)
     (last section)))
 
-; Recursividad natural
 (define line-cost
   (lambda (line)
     (define line-cost-map-int
@@ -174,43 +177,32 @@
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
-;(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
-;(line-cost l2) ;resultado debe ser 0
+(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
+(line-cost l2) ;resultado debe ser 0
 
 
 ;; Req 8: TDA line - otras funciones
 
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number U {0}
+; Recursividad = Cola
 
-; 1er Filtrar para obtener lista con secciones utiles
-; Obtiene costo 1 + costo 2
-
-; Declarativa - Test
-(define line-section-cost
-  (lambda (line station1-name station2-name)
-    (filter (lambda (x) (or
-                         (or
-                             (eq? (station-get-name (first x)) station1-name)
-                             (eq? (station-get-name (second x)) station1-name))
-                            (or
-                             (eq? (station-get-name (first x)) station2-name)
-                             (eq? (station-get-name (second x)) station2-name))))
-            (line-get-section line))))
-
-; Recursividad de Cola
-#|
 (define line-section-cost
   (lambda (line station1-name station2-name)
     (define line-section-cost-int
-      (lambda (fn-filter lst acc)
+      (lambda (lst flag name1 name2 acc)
         (cond
           [(null? lst) acc]
-          [else (line-section-cost-int
-|#
+          [(eq? (station-get-name (first (car lst))) name1) (line-section-cost-int (cdr lst) #t name1 name2 (+ (section-get-cost (car lst)) acc))]
+          [(eq? (station-get-name (second (car lst))) name2) (if flag
+                                                               (+ (section-get-cost (car lst)) acc)
+                                                               (line-section-cost-int (cdr lst) flag name1 name2 acc))]
+          [else (if flag
+                    (line-section-cost-int (cdr lst) flag name1 name2 (+ (section-get-cost (car lst)) acc))
+                    (line-section-cost-int (cdr lst) flag name1 name2 acc))])))
+    (line-section-cost-int (line-get-section line) #f station1-name station2-name 0)))
 
-; Calculando el costo entre secciones
-;(line-section-cost l1 "USACH" "Los Héroes")
+(line-section-cost l1 "San Pablo" "Las Rejas") ;respuesta es 39
 
 ;; Req 9: TDA line - modificador
 
