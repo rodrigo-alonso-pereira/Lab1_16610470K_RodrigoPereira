@@ -12,29 +12,38 @@
   (lambda (id name type stop-time)
     (list id name type stop-time)))
 
-;creando nueva estacion
-(define e0 (station 1 "USACH" "c" 30))
-e0
-(define e1 (station 2 "Estación Central" "c" 45))
-e1
-(define e2 (station 3 "ULA" "r" 45))
-e2
-(define e3 (station 3 "República" "r" 45))
-e3
-(define e4 (station 4 "Los Héroes" "c" 60))
-e4
-(define e5 (station 5 "Toesca" "r" 40))
-e5
-(define e6 (station 6 "La Moneda" "r" 40))
-e6
-(define e7 (station 7 "Cochera" "m" 3600))
-e7
-(define e8 (station 8 "Parque OHiggins" "r" 30))
-e8
-(define e9 (station 9 "San Pablo" "t" 40))
-e9
-(define e10 (station 10 "Los Dominicos" "t" 60))
-e10
+; Estaciones L1 simplificada metro santiago
+(define e0 (station 0 "San Pablo" "t" 90))
+(define e1 (station 1 "Neptuno" "r" 45))
+(define e2 (station 2 "Pajaritos" "c" 45))
+(define e3 (station 3 "Las Rejas" "r" 45))
+(define e4 (station 4 "Ecuador" "r" 60))
+(define e5 (station 5 "San Alberto Hurtado" "r" 40))
+(define e6 (station 6 "Universidad de Santiago de Chile" "c" 40))
+(define e7 (station 7 "Estación Central" "c" 45))
+(define e8 (station 8 "Unión Latinoamericana" "r" 30))
+(define e9 (station 9 "República" "r" 40))
+(define e10 (station 10 "Los Héroes" "c" 60))
+(define e11 (station 11 "La Moneda" "r" 40))
+(define e12 (station 12 "Universidad de Chile" "c" 90))
+(define e13 (station 13 "Santa Lucía" "r" 40))
+(define e14 (station 14 "Universidad Católica" "c" 60))
+(define e15 (station 15 "Baquedano" "r" 40))
+(define e16 (station 16 "Los Dominicos" "t" 90))
+(define e17 (station 17 "Cochera Neptuno" "m" 3600))
+
+; TODO: Estaciones L2 simplificada metro santiago, para una versión circular
+#|
+(define e18 (station 18 "El Llano" r 60))
+(define e19 (station 19 "Franklin" r 50))
+(define e20 (station 20 "Rondizzoni" r 55))
+(define e21 (station 21 "Parque O'Higgins" r 65))
+(define e22 (station 22 "Toesca" r 65))
+(define e23 (station 23 "Santa Ana" c 65))
+(define e24 (station 24 "Puente Cal y Canto" r 65))
+|#
+
+
 
 
 ;; Req 3: TDA section - constructor
@@ -46,27 +55,37 @@ e10
   (lambda (point1 point2 distance cost)
     (list point1 point2 distance cost)))
 
-; creando nueva estacion
-(define s0 (section e0 e1 2 50))
-s0
-(define s1 (section e1 e2 2.5 55))
-s1
-(define s2 (section e2 e3 1.5  30))
-s2
-(define s3 (section e3 e4 3  45))
-s3
-(define s4 (section e4 e5 3  45))
-s4
-(define s5 (section e4 e6 1.4  50))
-s5
-(define s6 (section e5 e8 2  40))
-s6
-(define s7 (section e0 e7 3  0))
-s7
-(define s8 (section e0 e9 7  100))
-s8
-(define s9 (section e6 e10 15  250))
-s9
+;Tramos Línea 1
+(define s0 (section e0 e1 4 15))
+(define s1 (section e1 e2 3 14))
+(define s2 (section e2 e3 2.5 10))
+(define s3 (section e3 e4 4.5 17))
+(define s4 (section e4 e5 4.7 18))
+(define s5 (section e5 e6 4.3 17))
+(define s6 (section e6 e7 3.8 12))
+(define s7 (section e7 e8 2.5 10))
+(define s8 (section e8 e9 4.5 17))
+(define s9 (section e9 e10 4.7 18))
+(define s10 (section e10 e11 4.3 17))
+(define s11 (section  e11 e12 3.8 12))
+(define s12 (section e12 e13 4.5 17))
+(define s13 (section e13 e14 4.7 18))
+(define s14 (section e14 e15 4.3 17))
+(define s15 (section e15 e16 4.2 17))
+;enlace cochera
+(define s16 (section e1 e17 3.8 12))
+
+; TODO: Tramos Línea 2, línea circular
+#|
+(define s17 (section e18 e19 4 15))
+(define s18 (section e19 e20 3 12))
+(define s19 (section e20 e21 5 18))
+(define s20 (section e21 e22 4.5 16))
+(define s21 (section e22 e10 4.2 16))
+(define s22 (section e10 e23 4.2 16))
+(define s23 (section e23 e24 4.2 16))
+(define s24 (section e24 e18 28 90))
+|#
 
 
 ;; Req 4: TDA line - constructor
@@ -78,11 +97,10 @@ s9
   (lambda (id name rail-type . section)
     (list id name rail-type section)))
 
-; creando nuevas lineas
-(define l0 (line 0 "Línea 0" "UIC 60 ASCE"))
-l0
-(define l1 (line 1 "Línea 1" "100 R.E." s0 s1 s2 s3 s5 s7 s8 s9))
-l1
+;Creación de Línea 1 con todos los tramos
+(define l1 (line 1 "Línea 1" "UIC 60 ASCE" s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13 s14 s15))
+;Creación de Línea 2 sin incluir tramos
+(define l2 (line 2 "Línea 2" "100 R.E."))
 
 
 ;; Req 5: TDA line - otras funciones
@@ -102,8 +120,8 @@ l1
   (lambda (line)
     (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
 
-; Calculando distancia l1
-(line-lenght l1)
+(line-lenght l1) ;resultado debe ser 64,3 si considera inclusive los tramos hacia estaciones de mantenimiento 
+(line-lenght l2) ;resultado debe ser 0
 
 
 ;; Req 6: TDA line - otras funciones
@@ -119,12 +137,22 @@ l1
   (lambda (station)
     (second station)))
 
-;(define line-section-length
-;  (lambda (line station1-name station2-name)
-;    (
+(define line-section-length
+  (lambda (line station1-name station2-name)
+    (define line-section-lenght-int
+      (lambda (lst flag acc)
+        (cond
+          [(null? lst) acc]
+          [(eq? (car lst) station1-name) (line-section-lenght-int (cdr lst) #t (cons (car lst) acc))]
+          [(eq? (car lst) station2-name) (if flag
+                                             (cons (car lst) acc)
+                                             (line-section-lenght-int (cdr lst) flag acc))]
+          [else (if flag
+                    (line-section-lenght-int )
+                    ()
+          
 
-; Calculando distancia entre "USACH" y "Los Heroes"
-; (line-section-length l1 “USACH” “Los Héroes”)
+;(line-section-length l1 “San Pablo” “Las Rejas”)   ;respuesta es 9.5
 
 
 ;; Req 7: TDA line - otras funciones
@@ -147,8 +175,9 @@ l1
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
-; Calculando el costo de la linea
-(line-cost l1)
+(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
+(line-cost l2) ;resultado debe ser 0
+
 
 ;; Req 8: TDA line - otras funciones
 
@@ -165,13 +194,15 @@ l1
                             (or (eq? (station-get-name (first x)) station2-name) (eq? (station-get-name (second x)) station2-name)))) (line-get-section line))))
 
 ; Recursividad de Cola
-;(define line-section-cost
- ; (lambda (line station1-name station2-name)
- ;   (define line-section-cost-int
-  ;    (lambda (fn-filter lst acc)
-   ;     (cond
-    ;      [(null? lst) acc]
-     ;     [else (line-section-cost-int
+#|
+(define line-section-cost
+  (lambda (line station1-name station2-name)
+    (define line-section-cost-int
+      (lambda (fn-filter lst acc)
+        (cond
+          [(null? lst) acc]
+          [else (line-section-cost-int
+|#
 
 ; Calculando el costo entre secciones
 (line-section-cost l1 "USACH" "Los Héroes")
@@ -187,9 +218,10 @@ l1
     
 
 ; Agregado nuevas secciones a lineas
+#|
 (define l2 (line-add-section l0 s0))
 (define l3 (line-add-section l2 s1))
 (define l4 (line-add-section l3 s2))
 (define l5 (line-add-section l4 s3))
-
+|#
 
