@@ -204,21 +204,43 @@
 
 (line-section-cost l1 "San Pablo" "Las Rejas") ;respuesta es 39
 
+
 ;; Req 9: TDA line - modificador
 
 ; Dom = line (line) X section (section)
 ; Rec = line
+; Recursividad = Natural
+
+; Funcion que entrega el id de una seccion
+(define section-get-id
+  (lambda (section)
+    (last section)))
+
+; Verificar si la seccion ya esta ingresada comparando id de estacion1 y estacion2
 
 (define line-add-section
   (lambda (line section)
     (reverse (cons section (reverse line)))))
+
+; Test previo
+(define l3 (line-add-section l2 s0))
+(define l4 (line-add-section l3 s1))
+(define l5 (line-add-section l4 s2))
+(define l6 (line-add-section l5 s3))
     
-
-; Agregado nuevas secciones a lineas
+;añadiendo tramos a l2
 #|
-(define l2 (line-add-section l0 s0))
-(define l3 (line-add-section l2 s1))
-(define l4 (line-add-section l3 s2))
-(define l5 (line-add-section l4 s3))
+(define l2a (line-add-section l2 s17))
+(define l2b (line-add-section l2a s18))
+(define l2c (line-add-section l2b s19))
+(define l2d (line-add-section l2c s20))
+(define l2e (line-add-section l2d s21))
+(define l2f (line-add-section l2e s22))
+(define l2g (line-add-section l2f s23))
+(define l2h (line-add-section l2g s24))
+(define l2i (line-add-section l2h s19))
+; dependiendo de como implemente la función, esta operación no añade la estación duplicada.
+; Puede lanzar un “error o excepción” (no un mensaje de error como String, para no
+; comprometer el recorrido de la función) o bien devolver la línea de entrada intacta.
+; En este caso, l2i sería igual a l2h. 
 |#
-
