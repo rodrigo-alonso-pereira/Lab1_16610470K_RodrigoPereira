@@ -41,8 +41,7 @@
 (define e16 (station 16 "Los Dominicos" t 90))
 (define e17 (station 17 "Cochera Neptuno" m 3600))
 
-; TODO: Estaciones L2 simplificada metro santiago, para una versión circular
-#|
+; Estaciones L2 simplificada metro santiago, para una versión circular
 (define e18 (station 18 "El Llano" r 60))
 (define e19 (station 19 "Franklin" r 50))
 (define e20 (station 20 "Rondizzoni" r 55))
@@ -50,9 +49,6 @@
 (define e22 (station 22 "Toesca" r 65))
 (define e23 (station 23 "Santa Ana" c 65))
 (define e24 (station 24 "Puente Cal y Canto" r 65))
-|#
-
-
 
 
 ;; Req 3: TDA section - constructor
@@ -84,8 +80,7 @@
 ;enlace cochera
 (define s16 (section e1 e17 3.8 12))
 
-; TODO: Tramos Línea 2, línea circular
-#|
+; Tramos Línea 2, línea circular
 (define s17 (section e18 e19 4 15))
 (define s18 (section e19 e20 3 12))
 (define s19 (section e20 e21 5 18))
@@ -94,7 +89,6 @@
 (define s22 (section e10 e23 4.2 16))
 (define s23 (section e23 e24 4.2 16))
 (define s24 (section e24 e18 28 90))
-|#
 
 
 ;; Req 4: TDA line - constructor
@@ -208,13 +202,31 @@
 ; Rec = line
 ; Recursividad = Natural
 
-; Funcion que entrega el id de una seccion "section-get-id"
+; Verificar si la seccion ya esta ingresada comparando pares ordenados de id de point1 y point2
 
-; Verificar si la seccion ya esta ingresada comparando id de estacion1 y estacion2
+
+(define verify-section-line
+  (lambda (lst-section section)
+    (cond
+      [(null? lst-section) #f]
+      [else (if (eq? section (car lst-section))
+                #t
+                (verify-section-line (cdr lst-section) section))])))
 
 (define line-add-section
   (lambda (line section)
     (reverse (cons section (reverse line)))))
+; (id name rail-type . section)
+
+(define line-add-section2
+  (lambda (line section)
+    (if (verify-section-line (line-get-section line) section)
+        line
+        (line (line-get-id line)
+              (line-get-name line)
+              (line-get-rail-type line)
+              (reverse (cons section (reverse (line-get-section line))))))))
+
 
 ; Test previo
 (define l3 (line-add-section l2 s0))

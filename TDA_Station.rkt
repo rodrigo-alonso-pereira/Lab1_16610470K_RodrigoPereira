@@ -5,3 +5,7 @@
 (define station-get-name
   (lambda (station)
     (second station)))
+
+(define station-get-id
+  (lambda (station)
+    (first station)))

@@ -10,6 +10,12 @@
   (lambda (section)
     (last section)))
 
-(define section-get-id
+(define section-get-point1
   (lambda (section)
-    (last section)))
+    (first section)))
+
+(define section-get-point2
+  (lambda (section)
+    (second section)))
+
+
