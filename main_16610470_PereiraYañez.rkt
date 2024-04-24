@@ -215,27 +215,14 @@
 
 (define line-add-section
   (lambda (line section)
-    (reverse (cons section (reverse line)))))
-; (id name rail-type . section)
-
-(define line-add-section2
-  (lambda (line section)
     (if (verify-section-line (line-get-section line) section)
         line
-        (line (line-get-id line)
+        (list (line-get-id line)
               (line-get-name line)
               (line-get-rail-type line)
               (reverse (cons section (reverse (line-get-section line))))))))
-
-
-; Test previo
-(define l3 (line-add-section l2 s0))
-(define l4 (line-add-section l3 s1))
-(define l5 (line-add-section l4 s2))
-(define l6 (line-add-section l5 s3))
     
 ;añadiendo tramos a l2
-#|
 (define l2a (line-add-section l2 s17))
 (define l2b (line-add-section l2a s18))
 (define l2c (line-add-section l2b s19))
@@ -245,8 +232,9 @@
 (define l2g (line-add-section l2f s23))
 (define l2h (line-add-section l2g s24))
 (define l2i (line-add-section l2h s19))
-; dependiendo de como implemente la función, esta operación no añade la estación duplicada.
-; Puede lanzar un “error o excepción” (no un mensaje de error como String, para no
-; comprometer el recorrido de la función) o bien devolver la línea de entrada intacta.
-; En este caso, l2i sería igual a l2h. 
+#|
+Dependiendo de como implemente la función, esta operación no añade la estación duplicada.
+Puede lanzar un “error o excepción” (no un mensaje de error como String, para no
+comprometer el recorrido de la función) o bien devolver la línea de entrada intacta.
+En este caso, l2i sería igual a l2h. 
 |#
