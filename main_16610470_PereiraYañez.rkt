@@ -111,10 +111,6 @@
 ; Dom = line (line)
 ; Rec = positive-number
 
-; Funcion que entrega una seccion de una linea "line-get-section"
-
-; Funcion que entrega una distancia de una seccion "section-get-distance"
-
 (define line-lenght
   (lambda (line)
     (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
@@ -128,8 +124,6 @@
 ; Dom = line (line) X station1-name (String) X station2-name (String)
 ; Rec = positive-number
 ; Recursividad = Cola
-
-; Funcion que entrega el nombre de una estacion "station-get-name"
 
 (define line-section-length
   (lambda (line station1-name station2-name)
@@ -155,8 +149,6 @@
 ; Dom = line (line)
 ; Rec = positive-number U {0}
 ; Recursividad = Natural
-
-; Funcion que entrega el costo de una seccion "section-get-cost"
 
 (define line-cost
   (lambda (line)
@@ -202,9 +194,6 @@
 ; Rec = line
 ; Recursividad = Natural
 
-; Verificar si la seccion ya esta ingresada comparando pares ordenados de id de point1 y point2
-
-
 (define verify-section-line
   (lambda (lst-section section)
     (cond
@@ -238,3 +227,13 @@ Puede lanzar un “error o excepción” (no un mensaje de error como String, pa
 comprometer el recorrido de la función) o bien devolver la línea de entrada intacta.
 En este caso, l2i sería igual a l2h. 
 |#
+
+;; Req9: TDA Línea - pertenencia
+
+; Dom = line (line)
+; Rec = boolean
+; Recursividad = 
+
+(define line?
+  (lambda (line)
+    (

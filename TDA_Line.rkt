@@ -2,29 +2,41 @@
 
 (provide (all-defined-out))
 
-;(require "main_16610470_PereiraYañez.rkt")
+;; Funcion que entrega un 'id' de una linea
 
-; Funcion que construye una linea
-(define line
-  (lambda (id name rail-type . section)
-    (list id name rail-type section)))
+; Dom: line (line)
+; Rec: id (positive-number)
 
-; Funcion que entrega un 'id' de una linea
 (define line-get-id
   (lambda (line)
     (first line)))
 
-; Funcion que entrega un 'name' de una linea
+
+;; Funcion que entrega un 'name' de una linea
+
+; Dom: line (line)
+; Rec: name (string)
+
 (define line-get-name
   (lambda (line)
     (second line)))
 
-; Funcion que entrega un 'rail-type' de una linea
+
+;; Funcion que entrega un 'rail-type' de una linea
+
+; Dom: line (line)
+; Rec: rail-type (string)
+
 (define line-get-rail-type
   (lambda (line)
     (third line)))
 
-; Funcion que entrega una 'section' de una linea
+
+;; Funcion que entrega una 'section' de una linea
+
+; Dom: line (line)
+; Rec: section (section)
+
 (define line-get-section
   (lambda (line)
     (last line)))

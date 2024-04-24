@@ -2,10 +2,21 @@
 
 (provide (all-defined-out))
 
-(define station-get-name
-  (lambda (station)
-    (second station)))
+;; Funcion que entrega un 'id' de una estacion
+
+; Dom: station (station)
+; Rec: id (int)
 
 (define station-get-id
   (lambda (station)
     (first station)))
+
+;; Funcion que entrega un 'name' de una estacion
+
+; Dom: station (station)
+; Rec: name (String)
+
+(define station-get-name
+  (lambda (station)
+    (second station)))
+
