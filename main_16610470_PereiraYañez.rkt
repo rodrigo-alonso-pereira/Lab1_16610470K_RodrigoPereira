@@ -253,3 +253,32 @@ En este caso, l2i sería igual a l2h.
 (define tr "Terminal")
 (define ct "Central")
 
+;; Req10: TDA pcar - Constructor
+
+; Dom = id (int) X capacity (positive integer) X model (string) X type (car-type)
+; Rec = pcar
+
+(define pcar
+  (lambda (id capacity model type)
+    (list id capacity model type)))
+
+;creando carros
+(define pc0 (pcar 0 100 "NS-74" tr))
+(define pc1 (pcar 1 100 "NS-74" ct))
+(define pc2 (pcar 2 150 "NS-74" ct))
+(define pc3 (pcar 3 100 "NS-74" ct))
+(define pc4 (pcar 4 100 "NS-74" tr))
+(define pc5 (pcar 5 100 "AS-2014" tr))
+(define pc6 (pcar 6 100 "AS-2014" ct))
+(define pc7 (pcar 7 100 "AS-2014" ct))
+(define pc8 (pcar 8 100 "AS-2014" ct))
+(define pc9 (pcar 9 100 "AS-2014" tr))
+(define pc10 (pcar 10 100 "AS-2014" tr))
+(define pc11a (pcar 11 100 "AS-2016" tr))
+(define pc11 (pcar 12 100 "AS-2016" ct))
+(define pc12 (pcar 13 100 "AS-2016" ct))
+(define pc13 (pcar 14 150 "AS-2016" ct))
+(define pc14 (pcar 15 100 "AS-2016" ct))
+(define pc15 (pcar 16 100 "AS-2016" ct))
+(define pc16 (pcar 17 100 "AS-2016" ct))
+(define pc17 (pcar 18 100 "AS-2016" tr))
