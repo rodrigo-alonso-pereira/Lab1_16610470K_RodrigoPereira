@@ -228,12 +228,28 @@ comprometer el recorrido de la función) o bien devolver la línea de entrada in
 En este caso, l2i sería igual a l2h. 
 |#
 
+
 ;; Req9: TDA Línea - pertenencia
 
 ; Dom = line (line)
 ; Rec = boolean
-; Recursividad = 
+; Recursividad = elegir alguna.
 
+#|
 (define line?
   (lambda (line)
     (
+|#
+
+#|
+(line? l1)  ;devuelve true
+(line? l2)  ;devuelve false
+(line? l2e)  ;devuelve false
+(line? l2h)  ;devuelve true
+|#
+
+
+; Definicion de car-type
+(define tr "Terminal")
+(define ct "Central")
+
