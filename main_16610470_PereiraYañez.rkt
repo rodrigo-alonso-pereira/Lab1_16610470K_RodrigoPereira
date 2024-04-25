@@ -289,6 +289,20 @@ En este caso, l2i sería igual a l2h.
 ; Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
 ; Rec = train
 
+(define verify-section-line
+  (lambda (lst-section section)
+    (cond
+      [(null? lst-section) #f]
+      [else (if (eq? section (car lst-section))
+                #t
+                (verify-section-line (cdr lst-section) section))])))
+
+(define verify-train-car-type
+  (lambda (lst)
+    (cond
+      [(null? lst) #f]
+      [else (if (; verificar q primero y ultimo sea tr y el resto ct
+
 (define train
   (lamda (id maker rail-type speed station-stay-time . pcar)
          (if (verify-train-car-type pcar)
