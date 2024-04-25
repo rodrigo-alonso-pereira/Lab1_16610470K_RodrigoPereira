@@ -1,7 +1,0 @@
-#lang racket
-
-(provide (all-defined-out))
-
-(define section-get-distance
-  (lambda (section)
-    (third section)))
