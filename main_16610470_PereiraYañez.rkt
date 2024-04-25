@@ -282,3 +282,29 @@ En este caso, l2i sería igual a l2h.
 (define pc15 (pcar 16 100 "AS-2016" ct))
 (define pc16 (pcar 17 100 "AS-2016" ct))
 (define pc17 (pcar 18 100 "AS-2016" tr))
+
+
+;; Req11: TDA train - Constructor
+
+; Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
+; Rec = train
+
+(define train
+  (lamda (id maker rail-type speed station-stay-time . pcar)
+         (if (verify-train-car-type pcar)
+             (list id maker rail-type speed station-stay-time pcar)
+             null)))
+
+;creando trenes
+(define t0 (train 0 "CAF" "UIC 60 ASCE" 60 1.5)) ;tren sin carros definidos
+(define t1 (train 1 "CAF" "UIC 60 ASCE" 70  2 pc0 pc1 pc2 pc3 pc4)) ;tren válido
+(define t2 (train 2 "CAF" "100 R.E." 70  2 pc5 pc6 pc7 pc8 pc9)) ;tren válido
+(define t3 (train 3 "CAF" "100 R.E." 70  2 pc11a pc11 pc12 pc13 pc14 pc15 pc16 pc17)) ;tren válido
+(define t4 (train 4 "CAF" "100 R.E." 70  2 pc1 pc2 pc3)) ;tren inválido sin terminales en extremos
+(define t5 (train 5 "CAF" "100 R.E." 70  2 pc0 pc5 pc9 pc12 pc17))  ;tren inválido por incompatibilidad de carros
+
+
+
+
+
+
