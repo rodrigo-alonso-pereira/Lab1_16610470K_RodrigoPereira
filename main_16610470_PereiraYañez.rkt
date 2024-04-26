@@ -23,7 +23,7 @@
   (lambda (id name type stop-time)
     (list id name type stop-time)))
 
-; Estaciones L1 simplificada metro santiago
+;Creando estaciones L1 simplificada metro santiago
 (define e0 (station 0 "San Pablo" t 90))
 (define e1 (station 1 "Neptuno" r 45))
 (define e2 (station 2 "Pajaritos" c 45))
@@ -43,7 +43,7 @@
 (define e16 (station 16 "Los Dominicos" t 90))
 (define e17 (station 17 "Cochera Neptuno" m 3600))
 
-; Estaciones L2 simplificada metro santiago, para una versión circular
+;Creando estaciones L2 simplificada metro santiago, para una versión circular
 (define e18 (station 18 "El Llano" r 60))
 (define e19 (station 19 "Franklin" r 50))
 (define e20 (station 20 "Rondizzoni" r 55))
@@ -62,7 +62,7 @@
   (lambda (point1 point2 distance cost)
     (list point1 point2 distance cost)))
 
-;Tramos Línea 1
+;Creando tramos Línea 1
 (define s0 (section e0 e1 4 15))
 (define s1 (section e1 e2 3 14))
 (define s2 (section e2 e3 2.5 10))
@@ -82,7 +82,7 @@
 ;enlace cochera
 (define s16 (section e1 e17 3.8 12))
 
-; Tramos Línea 2, línea circular
+;Creando tramos Línea 2, línea circular
 (define s17 (section e18 e19 4 15))
 (define s18 (section e19 e20 3 12))
 (define s19 (section e20 e21 5 18))
@@ -102,9 +102,9 @@
   (lambda (id name rail-type . section)
     (list id name rail-type section)))
 
-;Creación de Línea 1 con todos los tramos
+;creación de Línea 1 con todos los tramos
 (define l1 (line 1 "Línea 1" "UIC 60 ASCE" s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11 s12 s13 s14 s15))
-;Creación de Línea 2 sin incluir tramos
+;creación de Línea 2 sin incluir tramos
 (define l2 (line 2 "Línea 2" "100 R.E."))
 
 
@@ -117,6 +117,7 @@
   (lambda (line)
     (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
 
+;obteniendo distancia total de linea
 (line-lenght l1) ;resultado debe ser 64,3 si considera inclusive los tramos hacia estaciones de mantenimiento 
 (line-lenght l2) ;resultado debe ser 0
 
@@ -142,7 +143,7 @@
                     (line-section-lenght-int (cdr lst) flag name1 name2 acc))])))
     (line-section-lenght-int (line-get-section line) #f station1-name station2-name 0)))
           
-
+;obteniendo distancia entre estaciones
 (line-section-length l1 "San Pablo" "Las Rejas") ;respuesta es 9.5
 
 
@@ -162,6 +163,7 @@
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
+;obteniendo costos de lineas
 (line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
 (line-cost l2) ;resultado debe ser 0
 
@@ -187,6 +189,7 @@
                     (line-section-cost-int (cdr lst) flag name1 name2 acc))])))
     (line-section-cost-int (line-get-section line) #f station1-name station2-name 0)))
 
+;obteniendo costos entre estaciones
 (line-section-cost l1 "San Pablo" "Las Rejas") ;respuesta es 39
 
 
@@ -244,6 +247,7 @@ En este caso, l2i sería igual a l2h.
 |#
 
 #|
+;validando lineas
 (line? l1)  ;devuelve true
 (line? l2)  ;devuelve false
 (line? l2e)  ;devuelve false
@@ -320,7 +324,37 @@ En este caso, l2i sería igual a l2h.
 (define t4 (train 4 "CAF" "100 R.E." 70  2 pc1 pc2 pc3)) ;tren inválido sin terminales en extremos
 (define t5 (train 5 "CAF" "100 R.E." 70  2 pc0 pc5 pc9 pc12 pc17))  ;tren inválido por incompatibilidad de carros
       
-      
+
+;; Req13: TDA train - Modificador
+
+; Dom = train (train) X pcar (pcar) X position (positive-integer U {0})
+; Rec = train
+; Recursividad = Cola
+
+(define train-add-car
+  (lambda (train pcar position)
+    (define train-add-car-int
+      (lambda (lst pcar position count acc)
+        (cond
+          [(null? lst) (reverse acc)]
+          [else (if (= count position)
+                    (train-add-car-int (cdr lst) pcar position (+ count 1) (cons pcar acc))
+                    (train-add-car-int (cdr lst) pcar position (+ count 1) acc))])))
+    (if (null? (train-get-pcar train))
+        (list (train-get-id train)
+              (train-get-maker train)
+              (train-get-rail-type train)
+              (train-get-speed train)
+              (train-get-station-stay-time train)
+              pcar)
+        (train-add-car-int (train-get-pcar train) pcar position 0 null))))
+                                 
+;agregando carros
+(define t0a (train-add-car t0 pc5 0))
+(define t0b (train-add-car t0a pc6 1))
+(define t0c (train-add-car t0b pc7 2))
+(define t0d (train-add-car t0c pc8 3))
+(define t0e (train-add-car t0d pc9 4)) ;tren válido
 
 
 
