@@ -5,6 +5,8 @@
 (require "TDA_Station.rkt")
 (require "TDA_Line.rkt")
 (require "TDA_Section.rkt")
+(require "TDA_pcar.rkt")
+(require "TDA_train.rkt")
 
 ; Definicion de station-type
 (define r "Regular")
@@ -229,7 +231,7 @@ En este caso, l2i sería igual a l2h.
 |#
 
 
-;; Req9: TDA Línea - pertenencia
+;; Req10: TDA Línea - pertenencia
 
 ; Dom = line (line)
 ; Rec = boolean
@@ -253,7 +255,7 @@ En este caso, l2i sería igual a l2h.
 (define tr "Terminal")
 (define ct "Central")
 
-;; Req10: TDA pcar - Constructor
+;; Req11: TDA pcar - Constructor
 
 ; Dom = id (int) X capacity (positive integer) X model (string) X type (car-type)
 ; Rec = pcar
@@ -284,28 +286,29 @@ En este caso, l2i sería igual a l2h.
 (define pc17 (pcar 18 100 "AS-2016" tr))
 
 
-;; Req11: TDA train - Constructor
+;; Req12: TDA train - Constructor
 
 ; Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
 ; Rec = train
 
-(define verify-section-line
-  (lambda (lst-section section)
-    (cond
-      [(null? lst-section) #f]
-      [else (if (eq? section (car lst-section))
-                #t
-                (verify-section-line (cdr lst-section) section))])))
-
 (define verify-train-car-type
-  (lambda (lst)
-    (cond
-      [(null? lst) #f]
-      [else (if (; verificar q primero y ultimo sea tr y el resto ct
+  (lambda (lst_pcar)
+    (define verify-train-car-type-int
+      (lambda (lst flag)
+        (cond
+          [(null? lst) #t]
+          [(eq? flag #t) (if (eq? (pcar-get-car-type (car lst)) tr)
+                             (verify-train-car-type-int (cdr lst) #f)
+                             #f)]
+          [(null? (cdr lst)) (verify-train-car-type-int lst #t)]
+          [else (if (eq? (pcar-get-car-type (car lst)) ct)
+                    (verify-train-car-type-int (cdr lst) #f)
+                    #f)])))
+    (verify-train-car-type-int lst_pcar #t)))
 
 (define train
-  (lamda (id maker rail-type speed station-stay-time . pcar)
-         (if (verify-train-car-type pcar)
+  (lambda (id maker rail-type speed station-stay-time . pcar)
+         (if (eq? (verify-train-car-type pcar) #t)
              (list id maker rail-type speed station-stay-time pcar)
              null)))
 
@@ -316,6 +319,8 @@ En este caso, l2i sería igual a l2h.
 (define t3 (train 3 "CAF" "100 R.E." 70  2 pc11a pc11 pc12 pc13 pc14 pc15 pc16 pc17)) ;tren válido
 (define t4 (train 4 "CAF" "100 R.E." 70  2 pc1 pc2 pc3)) ;tren inválido sin terminales en extremos
 (define t5 (train 5 "CAF" "100 R.E." 70  2 pc0 pc5 pc9 pc12 pc17))  ;tren inválido por incompatibilidad de carros
+      
+      
 
 
 
