@@ -350,28 +350,6 @@ En este caso, l2i sería igual a l2h.
           (train-get-speed train)
           (train-get-station-stay-time train)
           (train-add-car-by-position (train-get-pcar train) pcar position))))
-                                 
-#|
-(define train-add-car
-  (lambda (train pcar position)
-    (if (null? (train-get-pcar train))
-        (list (train-get-id train)
-               (train-get-maker train)
-               (train-get-rail-type train)
-               (train-get-speed train)
-               (train-get-station-stay-time train)
-               (list pcar))
-        (list (train-get-id train)
-              (train-get-maker train)
-              (train-get-rail-type train)
-              (train-get-speed train)
-              (train-get-station-stay-time train)
-              (train-add-car-by-position (train-get-pcar train) pcar position)))))
-|#
-
-;agregando carros
-(define t3a (train-add-car t3 pc6 1))
-;(define pc6 (pcar 6 100 "AS-2014" ct))
 
 (define t0a (train-add-car t0 pc5 0))
 (define t0b (train-add-car t0a pc6 1))
