@@ -367,12 +367,12 @@ En este caso, l2i sería igual a l2h.
 
 (define train-remove-car-by-position
   (lambda (lst position)
-    (define train-add-car-by-position-int
-      (lambda (lst pcar position count acc)
+    (define train-remove-car-by-position-int
+      (lambda (lst position count acc)
          (cond
-          [(or (null? lst) (= count position)) (append (reverse acc) (list pcar) lst)]
-          [else (train-add-car-by-position-int (cdr lst) pcar position (+ count 1) (cons (car lst) acc))])))
-    (train-add-car-by-position-int lst pcar position 0 null)))
+          [(or (null? lst) (= count position)) (append (reverse acc) (cdr lst))]
+          [else (train-remove-car-by-position-int (cdr lst) position (+ count 1) (cons (car lst) acc))])))
+    (train-remove-car-by-position-int lst position 0 null)))
 
 (define train-remove-car
   (lambda (train position)
