@@ -141,7 +141,9 @@
           [else (if flag
                     (line-section-lenght-int (cdr lst) flag name1 name2 (+ (section-get-distance (car lst)) acc))
                     (line-section-lenght-int (cdr lst) flag name1 name2 acc))])))
-    (line-section-lenght-int (line-get-section line) #f station1-name station2-name 0)))
+    (if (and (eq? (station-get-name (first (car (line-get-section line)))) station1-name) (eq? (station-get-name (second (car (line-get-section line)))) station2-name))
+        (section-get-distance (car (line-get-section line)))
+        (line-section-lenght-int (line-get-section line) #f station1-name station2-name 0))))
           
 ;obteniendo distancia entre estaciones
 (line-section-length l1 "San Pablo" "Las Rejas") ;respuesta es 9.5
