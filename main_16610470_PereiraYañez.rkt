@@ -351,6 +351,7 @@ En este caso, l2i sería igual a l2h.
           (train-get-station-stay-time train)
           (train-add-car-by-position (train-get-pcar train) pcar position))))
 
+;agregando carros a convoy
 (define t0a (train-add-car t0 pc5 0))
 (define t0b (train-add-car t0a pc6 1))
 (define t0c (train-add-car t0b pc7 2))
@@ -358,7 +359,30 @@ En este caso, l2i sería igual a l2h.
 (define t0e (train-add-car t0d pc9 4)) ;tren válido
 
 
+;; Req14: TDA train - Modificador
 
+; Dom = train (train) X position (positive-integer U {0})
+; Rec = train
+; Recursividad = Cola
 
+(define train-remove-car-by-position
+  (lambda (lst position)
+    (define train-add-car-by-position-int
+      (lambda (lst pcar position count acc)
+         (cond
+          [(or (null? lst) (= count position)) (append (reverse acc) (list pcar) lst)]
+          [else (train-add-car-by-position-int (cdr lst) pcar position (+ count 1) (cons (car lst) acc))])))
+    (train-add-car-by-position-int lst pcar position 0 null)))
 
+(define train-remove-car
+  (lambda (train position)
+    (list (train-get-id train)
+          (train-get-maker train)
+          (train-get-rail-type train)
+          (train-get-speed train)
+          (train-get-station-stay-time train)
+          (train-remove-car-by-position (train-get-pcar train) position))))
 
+;removiendo carros a convoy
+(define t1a (train-remove-car t1 0))
+(define t1b (train-remove-car t1 2))
