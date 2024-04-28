@@ -411,7 +411,6 @@ En este caso, l2i sería igual a l2h.
       [(null? (train-get-pcar train)) #f]
       [else (and (train?-int (train-get-pcar train) (pcar-get-model (car (train-get-pcar train)))) (verify-train-car-type (train-get-pcar train)))])))
 
-
 ;verificación de válidez en la conformación de trenes
 (train? t0) ;debe arrojar #f
 (train? t1) ;debe arrojar #t
@@ -427,7 +426,37 @@ En este caso, l2i sería igual a l2h.
 (train? t1b) ;debe arrojar #t
 
 
+;; Req16: TDA train - Otras funciones
+
+; Dom = train
+; Rec = positive-number U {0}
+; Recursividad = Natural
+
+(define train-capacity
+  (lambda (train)
+    (define train-capacity-int
+      (lambda (lst)
+        (cond
+          [(null? lst) 0]
+          [else (+ (pcar-get-capacity (car lst)) (train-capacity-int (cdr lst)))])))
+    (cond
+      [(null? train) 0]
+      [else (train-capacity-int (train-get-pcar train))])))
+ 
+;determinar capacidad del tren
+(train-capacity t0) ;debe arrojar 0
+(train-capacity t1) ;debe arrojar 550
 
 
 
-  
+
+
+
+
+
+
+
+
+
+
+
