@@ -1,7 +1,5 @@
 #lang racket
 
-(provide (all-defined-out))
-
 (require "TDA_Station.rkt")
 (require "TDA_Line.rkt")
 (require "TDA_Section.rkt")
@@ -474,14 +472,17 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = sub (subway) X train+ (pueden ser 1 o más trenes)
 ; Rec = subway
-; Recursividad =
+; Recursividad = Cola
 
-;(define subway-add-train
-;  (lambda (sub . train)
- ;   (
+(define subway-add-train
+  (lambda (sub . train)
+    (define subway-add-train-int
+      (lambda (lst subway acc)
+        (cond
+          [(null? lst
 
 ;Agregando trenes
-;(define sw0a (subway-add-train sw0 t1 t2 t0e))
+(define sw0a (subway-add-train sw0 t1 t2 t0e))
 
 
 
