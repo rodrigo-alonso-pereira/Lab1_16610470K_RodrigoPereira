@@ -464,6 +464,18 @@ En este caso, l2i sería igual a l2h.
 (define d3 (driver 3 "Pedro" "CAF"))
 
 
+;; Req18: TDA subway - Constructor
+
+; Dom = id (int) X nombre (string)
+; Rec = subway
+
+(define subway
+  (lambda (id nombre)
+    (list id nombre)))
+
+;Creando subway
+(define sw0 (subway 0 "Metro de Santiago"))
+(define sw1 (subway 1 "Subte"))
 
 
 
