@@ -2,6 +2,16 @@
 
 (provide (all-defined-out))
 
+;; Funcion que entrega un 'capacity' de un pcar
+
+; Dom: pcar (pcar)
+; Rec: capacity (positive integer) 
+
+(define pcar-get-capacity
+  (lambda (pcar)
+    (second pcar)))
+
+
 ;; Funcion que entrega un 'model' de un pcar
 
 ; Dom: pcar (pcar)
@@ -10,6 +20,7 @@
 (define pcar-get-model
   (lambda (pcar)
     (third pcar)))
+
 
 ;; Funcion que entrega un 'car-type' de un pcar
 
