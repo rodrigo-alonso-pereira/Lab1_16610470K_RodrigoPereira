@@ -296,6 +296,7 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
 ; Rec = train
+; Recursividad = Natural
 
 (define verify-train-car-type
   (lambda (lst_pcar)
@@ -396,11 +397,19 @@ En este caso, l2i sería igual a l2h.
 ; Rec = boolean
 ; Recursividad = Natural
 
-#|
 (define train?
   (lambda (train)
+    (define train?-int
+      (lambda (lst model)
+        (cond
+          [(null? lst) #t]
+          [else (if (eq? (pcar-get-model (car lst)) model)
+                    (train?-int (cdr lst) model)
+                    #f)])))
     (cond
-      [(null? (train-get-pcar
+      [(null? train) #f]
+      [(null? (train-get-pcar train)) #f]
+      [else (and (train?-int (train-get-pcar train) (pcar-get-model (car (train-get-pcar train)))) (verify-train-car-type (train-get-pcar train)))])))
 
 
 ;verificación de válidez en la conformación de trenes
@@ -416,7 +425,7 @@ En este caso, l2i sería igual a l2h.
 (train? t0e) ;debe arrojar #t
 (train? t1a) ;debe arrojar #f
 (train? t1b) ;debe arrojar #t
-|#
+
 
 
 
