@@ -448,6 +448,20 @@ En este caso, l2i sería igual a l2h.
 (train-capacity t1) ;debe arrojar 550
 
 
+;; Req17: TDA driver - Constructor
+
+; Dom = id (int) X nombre (string) X train-maker (string)
+; Rec = driver
+
+(define driver
+  (lambda (id nombre train-maker)
+    (list id nombre train-maker)))
+
+;Creando drivers
+(define d0 (driver 0 "Juan" "CAF"))
+(define d1 (driver 1 "Alejandro" "Alsthom"))
+(define d2 (driver 2 "Diego" "Alsthom"))
+(define d3 (driver 3 "Pedro" "CAF"))
 
 
 
