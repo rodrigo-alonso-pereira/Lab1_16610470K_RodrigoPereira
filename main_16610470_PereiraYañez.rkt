@@ -300,17 +300,19 @@ En este caso, l2i sería igual a l2h.
 (define verify-train-car-type
   (lambda (lst_pcar)
     (define verify-train-car-type-int
-      (lambda (lst flag)
+      (lambda (lst flag count)
         (cond
           [(null? lst) #t]
           [(eq? flag #t) (if (eq? (pcar-get-car-type (car lst)) tr)
-                             (verify-train-car-type-int (cdr lst) #f)
+                             (verify-train-car-type-int (cdr lst) #f (+ count 1))
                              #f)]
-          [(null? (cdr lst)) (verify-train-car-type-int lst #t)]
+          [(null? (cdr lst)) (verify-train-car-type-int lst #t (+ count 1))]
           [else (if (eq? (pcar-get-car-type (car lst)) ct)
-                    (verify-train-car-type-int (cdr lst) #f)
+                    (verify-train-car-type-int (cdr lst) #f (+ count 1))
                     #f)])))
-    (verify-train-car-type-int lst_pcar #t)))
+    (if (= 1 (length lst_pcar))
+        #f
+        (verify-train-car-type-int lst_pcar #t 0))))
 
 (define train
   (lambda (id maker rail-type speed station-stay-time . pcar)
@@ -386,3 +388,37 @@ En este caso, l2i sería igual a l2h.
 ;removiendo carros a convoy
 (define t1a (train-remove-car t1 0))
 (define t1b (train-remove-car t1 2))
+
+
+;; Req15: TDA train - Pertenencia
+
+; Dom = train
+; Rec = boolean
+; Recursividad = Natural
+
+#|
+(define train?
+  (lambda (train)
+    (cond
+      [(null? (train-get-pcar
+
+
+;verificación de válidez en la conformación de trenes
+(train? t0) ;debe arrojar #f
+(train? t1) ;debe arrojar #t
+(train? t2) ;debe arrojar #t
+(train? t3) ;debe arrojar #t
+(train? t4) ;debe arrojar #f
+(train? t0a) ;debe arrojar #f
+(train? t0b) ;debe arrojar #f
+(train? t0c) ;debe arrojar #f
+(train? t0d) ;debe arrojar #f
+(train? t0e) ;debe arrojar #t
+(train? t1a) ;debe arrojar #f
+(train? t1b) ;debe arrojar #t
+|#
+
+
+
+
+  
