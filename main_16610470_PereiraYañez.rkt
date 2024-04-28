@@ -336,23 +336,19 @@ En este caso, l2i sería igual a l2h.
 ; Rec = train
 ; Recursividad = Cola
 
-(define train-add-car-by-position
-  (lambda (lst pcar position)
-    (define train-add-car-by-position-int
-      (lambda (lst pcar position count acc)
-         (cond
-          [(or (null? lst) (= count position)) (append (reverse acc) (list pcar) lst)]
-          [else (train-add-car-by-position-int (cdr lst) pcar position (+ count 1) (cons (car lst) acc))])))
-    (train-add-car-by-position-int lst pcar position 0 null)))
-
 (define train-add-car
   (lambda (train pcar position)
+    (define train-add-car-in
+      (lambda (lst pcar position count acc)
+        (cond
+          [(or (null? lst) (= count position)) (append (reverse acc) (list pcar) lst)]
+          [else (train-add-car-in (cdr lst) pcar position (+ count 1) (cons (car lst) acc))])))
     (list (train-get-id train)
           (train-get-maker train)
           (train-get-rail-type train)
           (train-get-speed train)
           (train-get-station-stay-time train)
-          (train-add-car-by-position (train-get-pcar train) pcar position))))
+          (train-add-car-in (train-get-pcar train) pcar position 0 null))))
 
 ;agregando carros a convoy
 (define t0a (train-add-car t0 pc5 0))
@@ -368,23 +364,19 @@ En este caso, l2i sería igual a l2h.
 ; Rec = train
 ; Recursividad = Cola
 
-(define train-remove-car-by-position
-  (lambda (lst position)
-    (define train-remove-car-by-position-int
-      (lambda (lst position count acc)
-         (cond
-          [(or (null? lst) (= count position)) (append (reverse acc) (cdr lst))]
-          [else (train-remove-car-by-position-int (cdr lst) position (+ count 1) (cons (car lst) acc))])))
-    (train-remove-car-by-position-int lst position 0 null)))
-
 (define train-remove-car
   (lambda (train position)
+    (define train-remove-car-int
+      (lambda (lst position count acc)
+        (cond
+          [(or (null? lst) (= count position)) (append (reverse acc) (cdr lst))]
+          [else (train-remove-car-int (cdr lst) position (+ count 1) (cons (car lst) acc))])))
     (list (train-get-id train)
           (train-get-maker train)
           (train-get-rail-type train)
           (train-get-speed train)
           (train-get-station-stay-time train)
-          (train-remove-car-by-position (train-get-pcar train) position))))
+          (train-remove-car-int (train-get-pcar train) position 0 null))))
 
 ;removiendo carros a convoy
 (define t1a (train-remove-car t1 0))
@@ -476,6 +468,21 @@ En este caso, l2i sería igual a l2h.
 ;Creando subway
 (define sw0 (subway 0 "Metro de Santiago"))
 (define sw1 (subway 1 "Subte"))
+
+
+;; Req19: TDA subway - Modificador
+
+; Dom = sub (subway) X train+ (pueden ser 1 o más trenes)
+; Rec = subway
+; Recursividad =
+
+;(define subway-add-train
+;  (lambda (sub . train)
+ ;   (
+
+;Agregando trenes
+;(define sw0a (subway-add-train sw0 t1 t2 t0e))
+
 
 
 
