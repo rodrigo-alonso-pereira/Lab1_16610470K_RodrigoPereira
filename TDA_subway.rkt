@@ -17,6 +17,6 @@
 ; Dom: subway (subway)
 ; Rec: nombre (string)
 
-(define subway-get-id
+(define subway-get-nombre
   (lambda (subway)
     (second subway)))
