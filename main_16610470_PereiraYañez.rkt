@@ -522,3 +522,37 @@ En este caso, l2i sería igual a l2h.
 ;Agregando drivers
 (define sw0c (subway-add-driver sw0b d0 d1 d2 d3))
 
+
+;; Req22: TDA subway - Otras funciones
+
+; Dom = sub (subway)
+; Rec = String
+
+(define flatten-list
+  (lambda (sub)
+    (cond
+      [(null? sub) null]
+      [(not (list? (car sub))) (cons (car sub) (cons " " (flatten-list (cdr sub))))]
+      [else (append (flatten-list (car sub)) (flatten-list (cdr sub)))])))
+
+#|
+(define subway->string
+  (lambda (sub)
+    (define subway->string-int
+      (lambda (fn-map fn-apply lst)
+        (cond
+          [(null? lst) 0]
+          [else (fn-apply (fn-map (car lst)) (subway->string-int fn-map fn-apply (cdr lst)))])))
+    (subway->string-int (lambda (x) (if (number? x) (number->string x) x)) string-append (subway->string2 sub))))
+|#
+
+(define (subway->string sub)
+  (apply string-append (map (lambda (x) (if (number? x) (number->string x) x)) (flatten-list sub))))
+
+;Expresado subway como string
+(subway->string sw0c)
+
+
+
+
+  
