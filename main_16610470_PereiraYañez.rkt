@@ -506,7 +506,19 @@ En este caso, l2i sería igual a l2h.
 (define sw0b (subway-add-line sw0a l1 l2h))
 
 
+;; Req21: TDA subway - Modificador
 
+; Dom = sub (subway) X driver+ (pueden ser 1 o más conductores)
+; Rec = subway
 
+(define subway-add-driver
+  (lambda (sub . driver)
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (fourth sub)
+          driver)))
 
+;Agregando drivers
+(define sw0c (subway-add-driver sw0b d0 d1 d2 d3))
 
