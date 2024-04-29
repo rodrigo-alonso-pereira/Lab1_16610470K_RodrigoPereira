@@ -5,6 +5,7 @@
 (require "TDA_Section.rkt")
 (require "TDA_pcar.rkt")
 (require "TDA_train.rkt")
+(require "TDA_subway.rkt")
 
 ; Definicion de station-type
 (define r "Regular")
@@ -317,7 +318,7 @@ En este caso, l2i sería igual a l2h.
   (lambda (id maker rail-type speed station-stay-time . pcar)
          (if (eq? (verify-train-car-type pcar) #t)
              (list id maker rail-type speed station-stay-time pcar)
-             null)))
+             null)))r
 
 ;creando trenes
 (define t0 (train 0 "CAF" "UIC 60 ASCE" 60 1.5)) ;tren sin carros definidos
@@ -477,15 +478,16 @@ En este caso, l2i sería igual a l2h.
 (define subway-add-train
   (lambda (sub . train)
     (define subway-add-train-int
-      (lambda (lst subway acc)
+      (lambda (lst acc)
         (cond
-          [(null? lst
+          [(null? lst) acc]
+          [else (subway-add-train-int (cdr lst) (cons (car lst) acc))])))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (subway-add-train-int train null))))
 
 ;Agregando trenes
 (define sw0a (subway-add-train sw0 t1 t2 t0e))
-
-
-
 
 
 
