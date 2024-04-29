@@ -490,6 +490,20 @@ En este caso, l2i sería igual a l2h.
 (define sw0a (subway-add-train sw0 t1 t2 t0e))
 
 
+;; Req20: TDA subway - Modificador
+
+; Dom = sub (subway) X line+ (pueden ser 1 o más líneas)
+; Rec = subway
+
+(define subway-add-line
+  (lambda (sub . line)
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          line)))
+
+;Agregando lineas
+(define sw0b (subway-add-line sw0a l1 l2h))
 
 
 
