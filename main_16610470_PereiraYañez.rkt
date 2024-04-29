@@ -546,13 +546,22 @@ En este caso, l2i sería igual a l2h.
     (subway->string-int (lambda (x) (if (number? x) (number->string x) x)) string-append (subway->string2 sub))))
 |#
 
-(define (subway->string sub)
-  (apply string-append (map (lambda (x) (if (number? x) (number->string x) x)) (flatten-list sub))))
+(define subway->string
+  (lambda (sub)
+    (apply string-append (map (lambda (x) (if (number? x) (number->string x) x)) (flatten-list sub)))))
 
 ;Expresado subway como string
 (subway->string sw0c)
 
 
+;; Req23: TDA subway - Modificador
 
+; Dom = sub (subway) X function
+; Rec = subway
+
+(define subway-rise-section-cost
+  (lambda (sub)
+    (lambda (function)
+      (map (
 
   
