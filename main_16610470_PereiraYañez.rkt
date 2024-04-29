@@ -1,8 +1,8 @@
 #lang racket
 
-(require "TDA_Station.rkt")
-(require "TDA_Line.rkt")
-(require "TDA_Section.rkt")
+(require "TDA_station.rkt")
+(require "TDA_line.rkt")
+(require "TDA_section.rkt")
 (require "TDA_pcar.rkt")
 (require "TDA_train.rkt")
 (require "TDA_subway.rkt")
@@ -559,9 +559,75 @@ En este caso, l2i sería igual a l2h.
 ; Dom = sub (subway) X function
 ; Rec = subway
 
+#|
 (define subway-rise-section-cost
-  (lambda (sub)
-    (lambda (function)
-      (map (
+  (lambda (sub function)
+      (map (function (section-get-cost (first (line-get-section (first (fourth sub)))))))))
 
-  
+(define subway-rise-section-cost
+  (lambda (sub function)
+    (define subway-rise-section-cost-int
+      (lambda (lines fn)
+        (map (lambda (line)
+               (map (lambda (section)
+                      (map (lambda (cost) (* cost 1.3))
+                           (section-get-cost section)))
+                      (line-get-section line)))
+               lines)))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (subway-rise-section-cost-int (fourth sub) function)
+          (fifth sub))))
+|#
+
+(define subway-rise-section-cost
+  (lambda (sub function)
+    (define subway-rise-section-cost-int
+      (lambda (lines fn)
+        (map (lambda (line)
+               (map (lambda (section) (* 1.3 (section-get-cost section)))
+                      (line-get-section line)))
+               lines)))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (subway-rise-section-cost-int (fourth sub) function)
+          (fifth sub))))
+
+;Aumentando los costos de las estaciones en un 30%
+(define sw0d (subway-rise-section-cost sw0c (lambda (c) (* c 1.3))))
+
+#|
+(define line-lenght
+  (lambda (line)
+    (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
+
+
+(define increment-matrix
+  (lambda (matrix)
+    (map (lambda (row) (map (lambda (item) (* item 2)) row)) matrix)
+    ))
+
+(define example-matrix '((1 2 3) (4 5) (6 7 8
+(increment-matrix example-matrix)
+
+(define (process-matrix-of-matrices matrix-of-matrices)
+  (map (lambda (matrix)    ; cada "matrix" es una matriz en la matriz de matrices
+         (map (lambda (row) ; cada "row" es una fila en la matriz
+                (map increment-element row)) ; aplicamos increment-element a cada elemento de la fila
+              matrix))
+       matrix-of-matrices))
+
+(define increment-first
+  (lambda (lst)
+    (map (lambda (sublist)
+         (if (and (list? sublist) (not (null? sublist)))  ; Verifica que cada elemento sea una sublista no vacía
+             (cons (+ 1 (car sublist)) (cdr sublist))  ; Incrementa el primer elemento
+             sublist))  ; Devuelve la sublista sin modificar si no es una lista o está vacía
+         lst))
+|#
+
+
+
+
