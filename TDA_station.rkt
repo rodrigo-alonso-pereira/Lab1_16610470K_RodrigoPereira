@@ -20,3 +20,12 @@
   (lambda (station)
     (second station)))
 
+
+;; Funcion que entrega un 'stop-time' de una estacion
+
+; Dom: station (station)
+; Rec: stop-time (positive integer)
+
+(define station-get-stop-time
+  (lambda (station)
+    (last station)))
