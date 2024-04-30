@@ -623,11 +623,12 @@ En este caso, l2i sería igual a l2h.
 ; Dom = sub (subway) X trainId (int) X lineID (int)
 ; Rec = subway
 
-(define subway-assign-train-to-line
-  (lambda (sub trainId lineID)
-    (define subway-find
+(define subway-find
       (lambda (lst id)
         (filter (lambda (x) (= (car x) id)) lst)))
+
+(define subway-assign-train-to-line
+  (lambda (sub trainId lineID)
     (list (subway-get-id sub)
           (subway-get-nombre sub)
           (third sub)
@@ -647,8 +648,14 @@ En este caso, l2i sería igual a l2h.
 
 (define subway-assign-driver-to-train
   (lambda (sub driverId trainId departureTime departure-station arrival-station)
+    (filter (lambda (x) (= (car x) id)) lst)))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (fourth sub)
+          (fifth sub)
+          (cons (subway-find (fourth sub) lineID) (subway-find (third sub) lineID)))))
      
-
 ;Asignando conductores a trenes
 (define sw0i (subway-assign-driver-to-train sw0h 0 0 "11:00:00" "San Pablo" "Los Héroes"))
 (define sw0j (subway-assign-driver-to-train sw0i 2 2 "12:00:00" "El Llano" "Toesca"))
