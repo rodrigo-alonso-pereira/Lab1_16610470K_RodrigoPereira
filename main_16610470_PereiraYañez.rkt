@@ -623,18 +623,50 @@ En este caso, l2i sería igual a l2h.
 ; Dom = sub (subway) X trainId (int) X lineID (int)
 ; Rec = subway
 
+#|
 (define subway-find
       (lambda (lst id)
         (filter (lambda (x) (= (car x) id)) lst)))
 
+(define subway-assign-train-to-line-2
+  (lambda (sub trainId lineID)
+    (define subway-first-assign-train-to-line-int
+      (lambda (id nombre trains lines drivers first_assign)
+        (list id nombre trains lines drivers first_assign)))
+    (define subway-assign-train-to-line-int
+      (lambda (id nombre trains lines drivers old_assign new_assign)
+        (list id nombre trains lines drivers old_assign new_assign)))
+    (if (null? (list-tail sub 5))
+        (subway-first-assign-train-to-line-int (subway-get-id sub)
+                                               (subway-get-nombre sub)
+                                               (third sub)
+                                               (fourth sub)
+                                               (fifth sub)
+                                               (append (subway-find (fourth sub) lineID) (subway-find (third sub) trainId)))
+        (subway-assign-train-to-line-int (subway-get-id sub)
+                                         (subway-get-nombre sub)
+                                         (third sub)
+                                         (fourth sub)
+                                         (fifth sub)
+                                         (list-tail sub 5)
+                                         (append (subway-find (fourth sub) lineID) (subway-find (third sub) trainId))))))
+|#
+
 (define subway-assign-train-to-line
   (lambda (sub trainId lineID)
-    (list (subway-get-id sub)
-          (subway-get-nombre sub)
-          (third sub)
-          (fourth sub)
-          (fifth sub)
-          (cons (subway-find (fourth sub) lineID) (subway-find (third sub) lineID)))))
+    (cond
+      [(null? (list-tail sub 5)) (list (subway-get-id sub)
+                                       (subway-get-nombre sub)
+                                       (third sub)
+                                       (fourth sub)
+                                       (fifth sub)
+                                       (list (list "idLine" lineID) (list "idTrain" trainId)))]
+      [else (list (subway-get-id sub)
+                  (subway-get-nombre sub)
+                  (third sub)
+                  (fourth sub)
+                  (fifth sub)
+                  (list (sixth sub) (list (list "idLine" lineID) (list "idTrain" trainId))))])))
     
 ;Asignando trenes a líneas
 (define sw0g (subway-assign-train-to-line sw0f 0 1))
@@ -648,19 +680,32 @@ En este caso, l2i sería igual a l2h.
 
 (define subway-assign-driver-to-train
   (lambda (sub driverId trainId departureTime departure-station arrival-station)
-    (filter (lambda (x) (= (car x) id)) lst)))
     (list (subway-get-id sub)
           (subway-get-nombre sub)
           (third sub)
           (fourth sub)
           (fifth sub)
-          (cons (subway-find (fourth sub) lineID) (subway-find (third sub) lineID)))))
+          (sixth sub)
+          (append (subway-find (third sub) trainId) (subway-find (fifth sub) driverId) (list departureTime departure-station arrival-station)))))
      
 ;Asignando conductores a trenes
 (define sw0i (subway-assign-driver-to-train sw0h 0 0 "11:00:00" "San Pablo" "Los Héroes"))
 (define sw0j (subway-assign-driver-to-train sw0i 2 2 "12:00:00" "El Llano" "Toesca"))
 
 
+;; Req27: TDA subway - Otras funciones
+
+; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
+; Rec = station
+
+#|
+(define where-is-train
+  (lambda (sub trainId time)
+    
+    
+;preguntando dónde está el tren
+(where-is-train sw0j 0 "11:12:00")  ;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
+|#
 
 
-
+    
