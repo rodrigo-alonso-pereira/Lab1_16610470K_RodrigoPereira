@@ -584,5 +584,43 @@ En este caso, l2i sería igual a l2h.
 (define sw0d (subway-rise-section-cost sw0c (lambda (c) (* c 1.3))))
 
 
+;; Req24: TDA subway - Modificador
+
+; Dom = sub (subway) X stationName (String) X time
+; Rec = subway
+
+(define subway-set-station-stoptime
+  (lambda (sub stationName time)
+    (define subway-set-station-stoptime-int
+      (lambda (lines stationName time)
+        (map (lambda (line)
+               (list (line-get-id line)
+                     (line-get-name line)
+                     (line-get-rail-type line)
+                     (map (lambda (section)
+                            (list (if (eq? (station-get-name (section-get-point1 section)) stationName)
+                                      (list (station-get-id (section-get-point1 section))
+                                            (station-get-name (section-get-point1 section))
+                                            (station-get-type (section-get-point1 section))
+                                            time))
+                                  (if (eq? (station-get-name (section-get-point2 section)) stationName)
+                                      (list (station-get-id (section-get-point2 section))
+                                            (station-get-name (section-get-point2 section))
+                                            (station-get-type (section-get-point2 section))
+                                            time))
+                                  (section-get-distance section)
+                                  (section-get-cost section)))
+                      (line-get-section line))))
+               lines)))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (subway-set-station-stoptime-int (fourth sub) stationName time)
+          (fifth sub))))
+    
+;Cambiando el tiempo de parada de algunas estaciones
+(define sw0e (subway-set-station-stoptime sw0d "Los Héroes" 180))
+(define sw0f (subway-set-station-stoptime sw0e "San Pablo" 50))
+
 
 
