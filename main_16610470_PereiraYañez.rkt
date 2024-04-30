@@ -677,17 +677,39 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = sub (subway) X driverId (int) X trainId (int) X departureTime(String en formato HH:MM:SS de 24 hrs) X departure-station (String) X arrival-station (String)
 ; Rec = subway
+; Recursividad = Natural X Cola
 
 (define subway-assign-driver-to-train
   (lambda (sub driverId trainId departureTime departure-station arrival-station)
-    (list (subway-get-id sub)
-          (subway-get-nombre sub)
-          (third sub)
-          (fourth sub)
-          (fifth sub)
-          (sixth sub)
-          (append (subway-find (third sub) trainId) (subway-find (fifth sub) driverId) (list departureTime departure-station arrival-station)))))
-     
+     (define find-train
+      (lambda (lst trainId)
+        (cond
+          [(null? lst) #f]
+          [else (if (eq? (second (second (car lst))) trainId)
+                    #t
+                    (find-train (cdr lst) trainId))])))
+    (define add-train
+      (lambda (lst trainId driverId departureTime departure-station arrival-station acc)
+        (cond
+          [(null? lst) (reverse acc)]
+          [else (if (eq? (second (second (car lst))) trainId)
+                    (add-train (cdr lst)
+                               trainId
+                               driverId
+                               departureTime
+                               departure-station
+                               arrival-station
+                               (cons (append (car lst) (list (list "idDriver" driverId) (list departureTime departure-station arrival-station))) acc))
+                    (add-train (cdr lst) trainId driverId departureTime departure-station arrival-station (cons (car lst) acc)))])))
+    (cond
+      [(find-train (sixth sub) trainId) (list (subway-get-id sub)
+                                              (subway-get-nombre sub)
+                                              (third sub)
+                                              (fourth sub)
+                                              (fifth sub)
+                                              (add-train (sixth sub) trainId driverId departureTime departure-station arrival-station null))]
+      [else sub])))
+    
 ;Asignando conductores a trenes
 (define sw0i (subway-assign-driver-to-train sw0h 0 0 "11:00:00" "San Pablo" "Los Héroes"))
 (define sw0j (subway-assign-driver-to-train sw0i 2 2 "12:00:00" "El Llano" "Toesca"))
