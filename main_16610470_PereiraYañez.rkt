@@ -318,7 +318,7 @@ En este caso, l2i sería igual a l2h.
   (lambda (id maker rail-type speed station-stay-time . pcar)
          (if (eq? (verify-train-car-type pcar) #t)
              (list id maker rail-type speed station-stay-time pcar)
-             null)))r
+             null)))
 
 ;creando trenes
 (define t0 (train 0 "CAF" "UIC 60 ASCE" 60 1.5)) ;tren sin carros definidos
@@ -559,35 +559,20 @@ En este caso, l2i sería igual a l2h.
 ; Dom = sub (subway) X function
 ; Rec = subway
 
-#|
-(define subway-rise-section-cost
-  (lambda (sub function)
-      (map (function (section-get-cost (first (line-get-section (first (fourth sub)))))))))
-
 (define subway-rise-section-cost
   (lambda (sub function)
     (define subway-rise-section-cost-int
       (lambda (lines fn)
         (map (lambda (line)
-               (map (lambda (section)
-                      (map (lambda (cost) (* cost 1.3))
-                           (section-get-cost section)))
-                      (line-get-section line)))
-               lines)))
-    (list (subway-get-id sub)
-          (subway-get-nombre sub)
-          (third sub)
-          (subway-rise-section-cost-int (fourth sub) function)
-          (fifth sub))))
-|#
-
-(define subway-rise-section-cost
-  (lambda (sub function)
-    (define subway-rise-section-cost-int
-      (lambda (lines fn)
-        (map (lambda (line)
-               (map (lambda (section) (* 1.3 (section-get-cost section)))
-                      (line-get-section line)))
+               (list (line-get-id line)
+                     (line-get-name line)
+                     (line-get-rail-type line)
+                     (map (lambda (section)
+                            (list (section-get-point1 section)
+                                  (section-get-point2 section)
+                                  (section-get-distance section)
+                                  (fn (section-get-cost section))))
+                      (line-get-section line))))
                lines)))
     (list (subway-get-id sub)
           (subway-get-nombre sub)
@@ -597,36 +582,6 @@ En este caso, l2i sería igual a l2h.
 
 ;Aumentando los costos de las estaciones en un 30%
 (define sw0d (subway-rise-section-cost sw0c (lambda (c) (* c 1.3))))
-
-#|
-(define line-lenght
-  (lambda (line)
-    (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
-
-
-(define increment-matrix
-  (lambda (matrix)
-    (map (lambda (row) (map (lambda (item) (* item 2)) row)) matrix)
-    ))
-
-(define example-matrix '((1 2 3) (4 5) (6 7 8
-(increment-matrix example-matrix)
-
-(define (process-matrix-of-matrices matrix-of-matrices)
-  (map (lambda (matrix)    ; cada "matrix" es una matriz en la matriz de matrices
-         (map (lambda (row) ; cada "row" es una fila en la matriz
-                (map increment-element row)) ; aplicamos increment-element a cada elemento de la fila
-              matrix))
-       matrix-of-matrices))
-
-(define increment-first
-  (lambda (lst)
-    (map (lambda (sublist)
-         (if (and (list? sublist) (not (null? sublist)))  ; Verifica que cada elemento sea una sublista no vacía
-             (cons (+ 1 (car sublist)) (cdr sublist))  ; Incrementa el primer elemento
-             sublist))  ; Devuelve la sublista sin modificar si no es una lista o está vacía
-         lst))
-|#
 
 
 
