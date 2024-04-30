@@ -614,43 +614,11 @@ En este caso, l2i sería igual a l2h.
 (define sw0e (subway-set-station-stoptime sw0d "Los Héroes" 180))
 (define sw0f (subway-set-station-stoptime sw0e "San Pablo" 50))
 
-; Train: Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
-; Line:  Dom = id (int) X name (string) X rail-type (string) X section* (* señala que se pueden agregar 0 o más tramos)
-; (mi_filter_natural (lambda (x) (> x 4)) (list 3 4 5 6))
 
 ;; Req25: TDA subway - Modificador
 
 ; Dom = sub (subway) X trainId (int) X lineID (int)
 ; Rec = subway
-
-#|
-(define subway-find
-      (lambda (lst id)
-        (filter (lambda (x) (= (car x) id)) lst)))
-
-(define subway-assign-train-to-line-2
-  (lambda (sub trainId lineID)
-    (define subway-first-assign-train-to-line-int
-      (lambda (id nombre trains lines drivers first_assign)
-        (list id nombre trains lines drivers first_assign)))
-    (define subway-assign-train-to-line-int
-      (lambda (id nombre trains lines drivers old_assign new_assign)
-        (list id nombre trains lines drivers old_assign new_assign)))
-    (if (null? (list-tail sub 5))
-        (subway-first-assign-train-to-line-int (subway-get-id sub)
-                                               (subway-get-nombre sub)
-                                               (third sub)
-                                               (fourth sub)
-                                               (fifth sub)
-                                               (append (subway-find (fourth sub) lineID) (subway-find (third sub) trainId)))
-        (subway-assign-train-to-line-int (subway-get-id sub)
-                                         (subway-get-nombre sub)
-                                         (third sub)
-                                         (fourth sub)
-                                         (fifth sub)
-                                         (list-tail sub 5)
-                                         (append (subway-find (fourth sub) lineID) (subway-find (third sub) trainId))))))
-|#
 
 (define subway-assign-train-to-line
   (lambda (sub trainId lineID)
@@ -719,15 +687,42 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
 ; Rec = station
+; Recursion = Cola X Natural
 
+
+; Funcion que busca una linea en un subway
+(define find-line-in-subway
+  (lambda (sub trainId)
+    (define find-idLine
+      (lambda (lst trainId)
+        (cond
+          [(null? lst) null]
+          [else (if (eq? (second (second (car lst))) trainId)
+                (second (first (car lst)))
+                (find-idLine (cdr lst) trainId))])))
+    (define find-line
+      (lambda (lst lineId)
+        (cond
+          [(null? lst) null]
+          [else (if (eq? (caar lst) lineId)
+                    (car lst)
+                    (find-line (cdr lst) lineId))])))
+    (find-line (fourth sub) (find-idLine (sixth sub) trainId))))
+
+; calcula el tiempo total disponible en segundos
 #|
+(define calculate-time
+  (lambda (t-inicio t-termino)
+
 (define where-is-train
   (lambda (sub trainId time)
+    (define 
+   
     
-    
+   
 ;preguntando dónde está el tren
 (where-is-train sw0j 0 "11:12:00")  ;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
-|#
+ |#
 
 
     
