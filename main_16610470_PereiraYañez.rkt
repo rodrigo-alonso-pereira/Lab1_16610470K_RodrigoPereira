@@ -639,3 +639,21 @@ En este caso, l2i sería igual a l2h.
 (define sw0g (subway-assign-train-to-line sw0f 0 1))
 (define sw0h (subway-assign-train-to-line sw0g 2 2))
 
+
+;; Req26: TDA subway - Modificador
+
+; Dom = sub (subway) X driverId (int) X trainId (int) X departureTime(String en formato HH:MM:SS de 24 hrs) X departure-station (String) X arrival-station (String)
+; Rec = subway
+
+(define subway-assign-driver-to-train
+  (lambda (sub driverId trainId departureTime departure-station arrival-station)
+     
+
+;Asignando conductores a trenes
+(define sw0i (subway-assign-driver-to-train sw0h 0 0 "11:00:00" "San Pablo" "Los Héroes"))
+(define sw0j (subway-assign-driver-to-train sw0i 2 2 "12:00:00" "El Llano" "Toesca"))
+
+
+
+
+
