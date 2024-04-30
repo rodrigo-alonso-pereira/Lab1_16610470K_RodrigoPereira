@@ -480,7 +480,7 @@ En este caso, l2i sería igual a l2h.
     (define subway-add-train-int
       (lambda (lst acc)
         (cond
-          [(null? lst) acc]
+          [(null? lst) (reverse acc)]
           [else (subway-add-train-int (cdr lst) (cons (car lst) acc))])))
     (list (subway-get-id sub)
           (subway-get-nombre sub)
@@ -527,6 +527,7 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = sub (subway)
 ; Rec = String
+; Rec = Natural / Declarativo
 
 (define flatten-list
   (lambda (sub)
@@ -534,17 +535,6 @@ En este caso, l2i sería igual a l2h.
       [(null? sub) null]
       [(not (list? (car sub))) (cons (car sub) (cons " " (flatten-list (cdr sub))))]
       [else (append (flatten-list (car sub)) (flatten-list (cdr sub)))])))
-
-#|
-(define subway->string
-  (lambda (sub)
-    (define subway->string-int
-      (lambda (fn-map fn-apply lst)
-        (cond
-          [(null? lst) 0]
-          [else (fn-apply (fn-map (car lst)) (subway->string-int fn-map fn-apply (cdr lst)))])))
-    (subway->string-int (lambda (x) (if (number? x) (number->string x) x)) string-append (subway->string2 sub))))
-|#
 
 (define subway->string
   (lambda (sub)
@@ -602,12 +592,14 @@ En este caso, l2i sería igual a l2h.
                                       (list (station-get-id (section-get-point1 section))
                                             (station-get-name (section-get-point1 section))
                                             (station-get-type (section-get-point1 section))
-                                            time))
+                                            time)
+                                      (section-get-point1 section))
                                   (if (eq? (station-get-name (section-get-point2 section)) stationName)
                                       (list (station-get-id (section-get-point2 section))
                                             (station-get-name (section-get-point2 section))
                                             (station-get-type (section-get-point2 section))
-                                            time))
+                                            time)
+                                      (section-get-point2 section))
                                   (section-get-distance section)
                                   (section-get-cost section)))
                       (line-get-section line))))
@@ -622,5 +614,28 @@ En este caso, l2i sería igual a l2h.
 (define sw0e (subway-set-station-stoptime sw0d "Los Héroes" 180))
 (define sw0f (subway-set-station-stoptime sw0e "San Pablo" 50))
 
+; Train: Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
+; Line:  Dom = id (int) X name (string) X rail-type (string) X section* (* señala que se pueden agregar 0 o más tramos)
+; (mi_filter_natural (lambda (x) (> x 4)) (list 3 4 5 6))
 
+;; Req25: TDA subway - Modificador
+
+; Dom = sub (subway) X trainId (int) X lineID (int)
+; Rec = subway
+
+(define subway-assign-train-to-line
+  (lambda (sub trainId lineID)
+    (define subway-find
+      (lambda (lst id)
+        (filter (lambda (x) (= (car x) id)) lst)))
+    (list (subway-get-id sub)
+          (subway-get-nombre sub)
+          (third sub)
+          (fourth sub)
+          (fifth sub)
+          (cons (subway-find (fourth sub) lineID) (subway-find (third sub) lineID)))))
+    
+;Asignando trenes a líneas
+(define sw0g (subway-assign-train-to-line sw0f 0 1))
+(define sw0h (subway-assign-train-to-line sw0g 2 2))
 
