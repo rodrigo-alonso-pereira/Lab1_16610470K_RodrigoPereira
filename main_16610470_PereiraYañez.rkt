@@ -1,11 +1,11 @@
 #lang racket
 
-(require "TDA_station.rkt")
-(require "TDA_line.rkt")
-(require "TDA_section.rkt")
-(require "TDA_pcar.rkt")
-(require "TDA_train.rkt")
-(require "TDA_subway.rkt")
+(require "tdaStation_16610470_PereiraYanez.rkt")
+(require "tdaLine_16610470_PereiraYanez.rkt")
+(require "tdaSection_16610470_PereiraYanez.rkt")
+(require "tdaPcar_16610470_PereiraYanez.rkt")
+(require "tdaTrain_16610470_PereiraYanez.rkt")
+(require "tdaSubway_16610470_PereiraYanez.rkt")
 
 ; Definicion de station-type
 (define r "Regular")
@@ -764,7 +764,8 @@ En este caso, l2i sería igual a l2h.
                         (end-station (sixth sub) trainId))))
 
 ;preguntando dónde está el tren
-(where-is-train sw0j 0 "11:12:00")  ;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
+(where-is-train sw0j 0 "11:12:00")
+;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
 
 
 ;; Req28: TDA subway - Otras funciones
