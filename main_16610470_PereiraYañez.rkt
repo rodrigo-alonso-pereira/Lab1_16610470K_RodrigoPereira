@@ -774,9 +774,9 @@ En este caso, l2i sería igual a l2h.
 ; Rec = list
 ; Recursion = Cola
 
-(define subway-train-path
+(define subway-train-path-fn ;Funcion wrapper por recursion
   (lambda (sub trainId time)
-    (define subway-train-path-int ;Funcion wrapper
+    (define subway-train-path-int
       (lambda (lst totalTime currentStation endStation acc) ;Recibe una lista de secciones, tiempo total usado, la estacion donde esta, la estacion final y un acumulador.
         (cond
           [(null? lst) (reverse acc)] ;Si es lista final, entrega el acc.
@@ -790,11 +790,15 @@ En este caso, l2i sería igual a l2h.
                                                (cons (station-get-name (section-get-point2 (car lst))) acc)) ;Envia acumulador con lista de estaciones recorridas
                         (reverse acc)) ; Si no tiene tiempo, retorna la lista acumulada.
                     (reverse (cons endStation acc)))]))) ;Si es la estacion final, retorna el acumulador incluyendo la estacion final.
-    (subway-train-path-int (line-get-section (find-line-in-subway sub trainId)) ;Llamada funcion interna con lista de secciones
-                           (calculate-difference-time (time-start (sixth sub) trainId) time) ;Tiempo total disponible
-                           (start-station (sixth sub) trainId) ;Estacion inicial
-                           (end-station (sixth sub) trainId) ;Estacion final
-                           (cons (start-station (sixth sub) trainId) null))))
+  (subway-train-path-int (line-get-section (find-line-in-subway sub trainId)) ;Llamada funcion interna con lista de secciones
+                         (calculate-difference-time (time-start (sixth sub) trainId) time) ;Tiempo total disponible
+                         (start-station (sixth sub) trainId) ;Estacion inicial
+                         (end-station (sixth sub) trainId) ;Estacion final
+                         (cons (start-station (sixth sub) trainId) null)))) ;Acumulador que parte con estacion inicial
+
+(define subway-train-path
+  (lambda (sub trainId time)
+    (force (lazy (subway-train-path-fn sub trainId time)))))
 
 ;produciendo la ruta que sigue el tren
 (subway-train-path sw0j 0 "11:30:00")
