@@ -687,7 +687,7 @@ En este caso, l2i sería igual a l2h.
 
 ; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
 ; Rec = station
-; Recursion = Cola X Natural
+; Recursion = Natural
 
 
 ; Funcion que busca una linea en un subway
@@ -767,5 +767,34 @@ En este caso, l2i sería igual a l2h.
 (where-is-train sw0j 0 "11:12:00")  ;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
 
 
+;; Req28: TDA subway - Otras funciones
 
-    
+; Descripcion = Función que permite ir armando el recorrido del tren a partir de una hora especificada y de manera perezosa dejando el registro de la ruta en una lista infinita de paradas.
+; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
+; Rec = list
+; Recursion = Cola
+
+(define subway-train-path
+  (lambda (sub trainId time)
+    (define subway-train-path-int ;Funcion wrapper
+      (lambda (lst totalTime currentStation endStation acc) ;Recibe una lista de secciones, tiempo total usado, la estacion donde esta, la estacion final y un acumulador.
+        (cond
+          [(null? lst) (reverse acc)] ;Si es lista final, entrega el acc.
+          [else (if (and (eq? (station-get-name (section-get-point1 (car lst))) currentStation) ;Evalua si la seccion tiene la estacion actual y que no sea la .estacion final
+                         (not (eq? (station-get-name (section-get-point2 (car lst))) endStation)))
+                    (if (> totalTime (+ (station-get-stop-time (section-get-point2 (car lst))) (/ (* (section-get-distance (car lst)) 1000) 16.67))) ;Evalua que tenga tiempo para moverse
+                        (subway-train-path-int (cdr lst) ;Llamada recursiva
+                                               (- totalTime (+ (station-get-stop-time (section-get-point2 (car lst))) (/ (* (section-get-distance (car lst)) 1000) 16.67))) ; Resta tiempo
+                                               (station-get-name (section-get-point2 (car lst))) ;Entrega estacion actual
+                                               endStation ;Entrega estacion final.
+                                               (cons (station-get-name (section-get-point2 (car lst))) acc)) ;Envia acumulador con lista de estaciones recorridas
+                        (reverse acc)) ; Si no tiene tiempo, retorna la lista acumulada.
+                    (reverse (cons endStation acc)))]))) ;Si es la estacion final, retorna el acumulador incluyendo la estacion final.
+    (subway-train-path-int (line-get-section (find-line-in-subway sub trainId)) ;Llamada funcion interna con lista de secciones
+                           (calculate-difference-time (time-start (sixth sub) trainId) time) ;Tiempo total disponible
+                           (start-station (sixth sub) trainId) ;Estacion inicial
+                           (end-station (sixth sub) trainId) ;Estacion final
+                           (cons (start-station (sixth sub) trainId) null))))
+
+;produciendo la ruta que sigue el tren
+(subway-train-path sw0j 0 "11:30:00")
