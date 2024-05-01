@@ -709,20 +709,63 @@ En este caso, l2i sería igual a l2h.
                     (find-line (cdr lst) lineId))])))
     (find-line (fourth sub) (find-idLine (sixth sub) trainId))))
 
-; calcula el tiempo total disponible en segundos
-#|
-(define calculate-time
-  (lambda (t-inicio t-termino)
+; Funcion que calcula el tiempo total disponible en segundos
+(define calculate-difference-time
+  (lambda (timeStart timeEnd)
+    (- (+ (* (string->number (substring timeEnd 0 2)) 3600) (* (string->number (substring timeEnd 3 5)) 60) (string->number (substring timeEnd 6 8)))
+       (+ (* (string->number (substring timeStart 0 2)) 3600) (* (string->number (substring timeStart 3 5)) 60) (string->number (substring timeStart 6 8))))))
+
+; Funcion que obtiene la hora de salida de un tren
+(define time-start
+  (lambda (lst trainId)
+    (cond
+      [(null? lst) null]
+      [else (if (eq? (second (second (car lst))) trainId)
+                (first (fourth (car lst)))
+                (time-start (cdr lst) trainId))])))
+
+; Funcion que obtien la estacion inicial de un tren
+(define start-station
+  (lambda (lst trainId)
+    (cond
+      [(null? lst) null]
+      [else (if (eq? (second (second (car lst))) trainId)
+                (second (fourth (car lst)))
+                (start-station (cdr lst) trainId))])))
+    
+
+; Funcion que obtiene la estacion final de un tren
+(define end-station
+  (lambda (lst trainId)
+    (cond
+      [(null? lst) null]
+      [else (if (eq? (second (second (car lst))) trainId)
+                (third (fourth (car lst)))
+                (start-station (cdr lst) trainId))])))
 
 (define where-is-train
   (lambda (sub trainId time)
-    (define 
-   
-    
-   
+    (define where-is-train-int
+      (lambda (lst totalTime currentStation endStation)
+        (cond
+          [(null? lst) currentStation]
+          [else (if (and (eq? (station-get-name (section-get-point1 (car lst))) currentStation)
+                         (not (eq? (station-get-name (section-get-point2 (car lst))) endStation)))
+                    (if (> totalTime (+ (station-get-stop-time (section-get-point2 (car lst))) (/ (* (section-get-distance (car lst)) 1000) 16.67)))
+                        (where-is-train-int (cdr lst)
+                                            (- totalTime (+ (station-get-stop-time (section-get-point2 (car lst))) (/ (* (section-get-distance (car lst)) 1000) 16.67)))
+                                            (station-get-name (section-get-point2 (car lst)))
+                                            endStation)
+                        (section-get-point1 (car lst)))
+                    (section-get-point2 (car lst)))])))
+    (where-is-train-int (line-get-section (find-line-in-subway sub trainId))
+                        (calculate-difference-time (time-start (sixth sub) trainId) time)
+                        (start-station (sixth sub) trainId)
+                        (end-station (sixth sub) trainId))))
+
 ;preguntando dónde está el tren
 (where-is-train sw0j 0 "11:12:00")  ;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
- |#
+
 
 
     
