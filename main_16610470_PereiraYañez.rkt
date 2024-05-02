@@ -234,27 +234,77 @@ comprometer el recorrido de la función) o bien devolver la línea de entrada in
 En este caso, l2i sería igual a l2h. 
 |#
 
-
-;; Req10: TDA Línea - pertenencia
-
-; Dom = line (line)
-; Rec = boolean
-; Recursividad = elegir alguna.
-
 #|
-(define line?
-  (lambda (line)
-    (
+Req10: TDA Línea - pertenencia
+
+Descripcion: Función que permite determinar si un elemento cumple con las restricciones
+             señaladas en apartados anteriores en relación a las estaciones y tramos para poder conformar
+             una línea.
+- Dom = line (line)
+- Rec = boolean
+- Recursividad = Natural.
 |#
 
-#|
+; Funcion que entrega una lista de estaciones desde una lista de secciones
+(define station-lst
+  (lambda (lst) ; Recibe lista de secciones
+    (cond
+      [(null? lst) null]
+      [else (cons (section-get-point1 (car lst)) (station-lst (cdr lst)))]))) ; Llamada recursiva con estados pendientes
+
+
+; Funcion que verifica id y nombre unico en una lista de secciones, retornando un booleano
+(define unique-id-name-station?
+  (lambda (lst) ;Lista de estaciones
+    (define unique-id-name-station?-int
+      (lambda (lst id name) ; Lista de estaciones, id, name
+        (cond
+          [(null? lst) #f] ; Si no esta duplicado, retorna false
+          [else (if (or (eq? (station-get-id (car lst)) id) ; Verifica id unico
+                        (eq? (station-get-name (car lst)) name)) ; Verifica nombre unico
+                    #t ; Si esta duplicado, retorna true
+                    (unique-id-name-station?-int (cdr lst) (station-get-id (car lst)) (station-get-name (car lst))))]))) ; Llamado Recursivo
+    (unique-id-name-station?-int (cdr lst) (station-get-id (car lst)) (station-get-name (car lst))))) ;Llamado con el cdr de la lista de esciones, el id y nombre de la primera
+
+
+; Funcion que permite verificar si las secciones estan conectadas
+(define connected-stations?
+  (lambda (lst) ; Lista de secciones
+    (define connected-stations?-int
+      (lambda (lst lastStation) ; cdr de la lista de secciones y ultima estacion
+        (cond
+          [(null? (cdr lst)) #t]
+          [else (if (eq? (section-get-point1 (car lst)) lastStation) ;
+                    (connected-stations?-int (cdr lst) (section-get-point2 (car lst)))
+                    #f)])))
+    (connected-stations?-int (cdr lst) (section-get-point2 (car lst)))))
+
+
+; Funcion que permite verificar si la primera y ultima estacion son terminales o si la ultima es combinacion
+; o si son circulares que la primera y ultima estacion sean iguales.
+(define correct-first-last-stations?
+  (lambda (lst) ; Lista de secciones
+    (if (or (eq? (section-get-point1 (car lst)) (section-get-point2 (last lst))) ; Compara con or, la primera estacion es igual a la ultima (lineas circulares)
+            (and (eq? (station-get-type (section-get-point1 (car lst))) t) 
+                      (eq? (station-get-type (section-get-point2 (last lst))) t))) ; Si la primera y ultima estacion son terminal
+        #t
+        #f)))
+
+(define line?
+  (lambda (line) ; Recibe una linea
+    (cond
+      [(null? (line-get-section line)) #f] ; Si la linea no tiene secciones retorna false
+      [else (if (and (not (unique-id-name-station? (station-lst (line-get-section line)))) ; Verifica id y nombre unicos de una linea
+                     (connected-stations? (line-get-section line)) ; Verifica que las estaciones esten conectadas
+                     (correct-first-last-stations? (line-get-section line))) ; Verifica que las lineas tengan extremos terminales, excepto circulares
+                #t
+                #f)])))
+                                                               
 ;validando lineas
 (line? l1)  ;devuelve true
 (line? l2)  ;devuelve false
 (line? l2e)  ;devuelve false
 (line? l2h)  ;devuelve true
-|#
-
 
 ; Definicion de car-type
 (define tr "Terminal")
