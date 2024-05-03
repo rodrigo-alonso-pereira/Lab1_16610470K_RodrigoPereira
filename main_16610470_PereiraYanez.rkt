@@ -8,7 +8,7 @@
 (require "tdaTrain_16610470_PereiraYanez.rkt")
 (require "tdaSubway_16610470_PereiraYanez.rkt")
 
-; Entrega de todas las funciones de main
+; Entrega de todas las funciones del main
 (provide (all-defined-out))
 
 ; Definicion de station-type
@@ -70,11 +70,14 @@ Req 5: TDA line - otras funciones
     (apply +(map (lambda (x) (section-get-distance x)) (line-get-section line)))))
 
 
-;; Req 6: TDA line - otras funciones
+#|
+Req 6: TDA line - otras funciones
 
-; Dom = line (line) X station1-name (String) X station2-name (String)
-; Rec = positive-number
-; Recursividad = Cola
+- Descripcion = Función que permite determinar la distancia entre una estación origen y una final.
+- Dom = line (line) X station1-name (String) X station2-name (String)
+- Rec = positive-number
+- Recursividad = Cola
+|#
 
 (define line-section-length
   (lambda (line station1-name station2-name)
@@ -92,16 +95,15 @@ Req 5: TDA line - otras funciones
     (if (and (eq? (station-get-name (first (car (line-get-section line)))) station1-name) (eq? (station-get-name (second (car (line-get-section line)))) station2-name))
         (section-get-distance (car (line-get-section line)))
         (line-section-lenght-int (line-get-section line) #f station1-name station2-name 0))))
-          
-;obteniendo distancia entre estaciones
-(line-section-length l1 "San Pablo" "Las Rejas") ;respuesta es 9.5
 
+#|
+Req 7: TDA line - otras funciones
 
-;; Req 7: TDA line - otras funciones
-
-; Dom = line (line)
-; Rec = positive-number U {0}
-; Recursividad = Natural
+- Descripcion = Función que permite determinar el costo total (monetario) de recorrer una línea.
+- Dom = line (line)
+- Rec = positive-number U {0}
+- Recursividad = Natural
+|#
 
 (define line-cost
   (lambda (line)
@@ -113,16 +115,15 @@ Req 5: TDA line - otras funciones
           [else (fn-apply (fn-map (car lst)) (line-cost-map-int fn-map fn-apply (cdr lst)))])))
     (line-cost-map-int (lambda (x) (section-get-cost x)) + (line-get-section line))))
 
-;obteniendo costos de lineas
-(line-cost l1) ;resultado debe ser 246 si considera inclusive los tramos hacia estaciones de mantenimiento 
-(line-cost l2) ;resultado debe ser 0
 
+#|
+Req 8: TDA line - otras funciones
 
-;; Req 8: TDA line - otras funciones
-
-; Dom = line (line) X station1-name (String) X station2-name (String)
-; Rec = positive-number U {0}
-; Recursividad = Cola
+- Descripcion = Función que permite determinar el costo de un trayecto entre una estación origen y una final.
+- Dom = line (line) X station1-name (String) X station2-name (String)
+- Rec = positive-number U {0}
+- Recursividad = Cola
+|#
 
 (define line-section-cost
   (lambda (line station1-name station2-name)
@@ -139,15 +140,15 @@ Req 5: TDA line - otras funciones
                     (line-section-cost-int (cdr lst) flag name1 name2 acc))])))
     (line-section-cost-int (line-get-section line) #f station1-name station2-name 0)))
 
-;obteniendo costos entre estaciones
-(line-section-cost l1 "San Pablo" "Las Rejas") ;respuesta es 39
 
+#|
+Req 9: TDA line - modificador
 
-;; Req 9: TDA line - modificador
-
-; Dom = line (line) X section (section)
-; Rec = line
-; Recursividad = Natural
+- Descripcion = Función que permite añadir tramos a una línea.
+- Dom = line (line) X section (section)
+- Rec = line
+- Recursividad = Natural
+|#
 
 (define verify-section-line
   (lambda (lst-section section)
@@ -165,30 +166,14 @@ Req 5: TDA line - otras funciones
               (line-get-name line)
               (line-get-rail-type line)
               (reverse (cons section (reverse (line-get-section line))))))))
-    
-;añadiendo tramos a l2
-(define l2a (line-add-section l2 s17))
-(define l2b (line-add-section l2a s18))
-(define l2c (line-add-section l2b s19))
-(define l2d (line-add-section l2c s20))
-(define l2e (line-add-section l2d s21))
-(define l2f (line-add-section l2e s22))
-(define l2g (line-add-section l2f s23))
-(define l2h (line-add-section l2g s24))
-(define l2i (line-add-section l2h s19))
-#|
-Dependiendo de como implemente la función, esta operación no añade la estación duplicada.
-Puede lanzar un “error o excepción” (no un mensaje de error como String, para no
-comprometer el recorrido de la función) o bien devolver la línea de entrada intacta.
-En este caso, l2i sería igual a l2h. 
-|#
+
 
 #|
 Req10: TDA Línea - pertenencia
 
-Descripcion: Función que permite determinar si un elemento cumple con las restricciones
-             señaladas en apartados anteriores en relación a las estaciones y tramos para poder conformar
-             una línea.
+- Descripcion: Función que permite determinar si un elemento cumple con las restricciones
+               señaladas en apartados anteriores en relación a las estaciones y tramos para poder conformar
+               una línea.
 - Dom = line (line)
 - Rec = boolean
 - Recursividad = Natural.
@@ -248,53 +233,34 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
                      (correct-first-last-stations? (line-get-section line))) ; Verifica que las lineas tengan extremos terminales, excepto circulares
                 #t
                 #f)])))
-                                                               
-;validando lineas
-(line? l1)  ;devuelve true
-(line? l2)  ;devuelve false
-(line? l2e)  ;devuelve false
-(line? l2h)  ;devuelve true
+                                                              
 
 ; Definicion de car-type
 (define tr "Terminal")
 (define ct "Central")
 
-;; Req11: TDA pcar - Constructor
 
-; Dom = id (int) X capacity (positive integer) X model (string) X type (car-type)
-; Rec = pcar
+#|
+Req11: TDA pcar - Constructor
+
+- Descripcion = Permite crear los carros de pasajeros que conforman un convoy.
+- Dom = id (int) X capacity (positive integer) X model (string) X type (car-type)
+- Rec = pcar
+|#
 
 (define pcar
   (lambda (id capacity model type)
     (list id capacity model type)))
 
-;creando carros
-(define pc0 (pcar 0 100 "NS-74" tr))
-(define pc1 (pcar 1 100 "NS-74" ct))
-(define pc2 (pcar 2 150 "NS-74" ct))
-(define pc3 (pcar 3 100 "NS-74" ct))
-(define pc4 (pcar 4 100 "NS-74" tr))
-(define pc5 (pcar 5 100 "AS-2014" tr))
-(define pc6 (pcar 6 100 "AS-2014" ct))
-(define pc7 (pcar 7 100 "AS-2014" ct))
-(define pc8 (pcar 8 100 "AS-2014" ct))
-(define pc9 (pcar 9 100 "AS-2014" tr))
-(define pc10 (pcar 10 100 "AS-2014" tr))
-(define pc11a (pcar 11 100 "AS-2016" tr))
-(define pc11 (pcar 12 100 "AS-2016" ct))
-(define pc12 (pcar 13 100 "AS-2016" ct))
-(define pc13 (pcar 14 150 "AS-2016" ct))
-(define pc14 (pcar 15 100 "AS-2016" ct))
-(define pc15 (pcar 16 100 "AS-2016" ct))
-(define pc16 (pcar 17 100 "AS-2016" ct))
-(define pc17 (pcar 18 100 "AS-2016" tr))
 
+#|
+Req12: TDA train - Constructor
 
-;; Req12: TDA train - Constructor
-
-; Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
-; Rec = train
-; Recursividad = Natural
+- Descripcion = Función que permite crear un tren o convoy.
+- Dom = id (int) X maker (string) X rail-type (string) X speed (positive number) X station-stay-time (positive number U {0}) X pcar* (* indica que pueden especificarse 0 o más carros)
+- Rec = train
+- Recursividad = Natural
+|#
 
 (define verify-train-car-type
   (lambda (lst_pcar)
@@ -318,21 +284,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
          (if (eq? (verify-train-car-type pcar) #t)
              (list id maker rail-type speed station-stay-time pcar)
              null)))
-
-;creando trenes
-(define t0 (train 0 "CAF" "UIC 60 ASCE" 60 1.5)) ;tren sin carros definidos
-(define t1 (train 1 "CAF" "UIC 60 ASCE" 70  2 pc0 pc1 pc2 pc3 pc4)) ;tren válido
-(define t2 (train 2 "CAF" "100 R.E." 70  2 pc5 pc6 pc7 pc8 pc9)) ;tren válido
-(define t3 (train 3 "CAF" "100 R.E." 70  2 pc11a pc11 pc12 pc13 pc14 pc15 pc16 pc17)) ;tren válido
-(define t4 (train 4 "CAF" "100 R.E." 70  2 pc1 pc2 pc3)) ;tren inválido sin terminales en extremos
-(define t5 (train 5 "CAF" "100 R.E." 70  2 pc0 pc5 pc9 pc12 pc17))  ;tren inválido por incompatibilidad de carros
       
+#|
+Req13: TDA train - Modificador
 
-;; Req13: TDA train - Modificador
-
-; Dom = train (train) X pcar (pcar) X position (positive-integer U {0})
-; Rec = train
-; Recursividad = Cola
+- Descripcion = Función que permite añadir carros a un tren en una posición dada.
+- Dom = train (train) X pcar (pcar) X position (positive-integer U {0})
+- Rec = train
+- Recursividad = Cola
+|#
 
 (define train-add-car
   (lambda (train pcar position)
@@ -348,19 +308,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (train-get-station-stay-time train)
           (train-add-car-in (train-get-pcar train) pcar position 0 null))))
 
-;agregando carros a convoy
-(define t0a (train-add-car t0 pc5 0))
-(define t0b (train-add-car t0a pc6 1))
-(define t0c (train-add-car t0b pc7 2))
-(define t0d (train-add-car t0c pc8 3))
-(define t0e (train-add-car t0d pc9 4)) ;tren válido
 
+#|
+Req14: TDA train - Modificador
 
-;; Req14: TDA train - Modificador
-
-; Dom = train (train) X position (positive-integer U {0})
-; Rec = train
-; Recursividad = Cola
+- Descripcion = Función que permite eliminar un carro desde el convoy.
+- Dom = train (train) X position (positive-integer U {0})
+- Rec = train
+- Recursividad = Cola
+|#
 
 (define train-remove-car
   (lambda (train position)
@@ -376,16 +332,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (train-get-station-stay-time train)
           (train-remove-car-int (train-get-pcar train) position 0 null))))
 
-;removiendo carros a convoy
-(define t1a (train-remove-car t1 0))
-(define t1b (train-remove-car t1 2))
 
+#|
+Req15: TDA train - Pertenencia
 
-;; Req15: TDA train - Pertenencia
-
-; Dom = train
-; Rec = boolean
-; Recursividad = Natural
+- Descripcion = Función que permite determinar si un elemento es un tren válido.
+- Dom = train
+- Rec = boolean
+- Recursividad = Natural
+|#
 
 (define train?
   (lambda (train)
@@ -401,26 +356,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
       [(null? (train-get-pcar train)) #f]
       [else (and (train?-int (train-get-pcar train) (pcar-get-model (car (train-get-pcar train)))) (verify-train-car-type (train-get-pcar train)))])))
 
-;verificación de válidez en la conformación de trenes
-(train? t0) ;debe arrojar #f
-(train? t1) ;debe arrojar #t
-(train? t2) ;debe arrojar #t
-(train? t3) ;debe arrojar #t
-(train? t4) ;debe arrojar #f
-(train? t0a) ;debe arrojar #f
-(train? t0b) ;debe arrojar #f
-(train? t0c) ;debe arrojar #f
-(train? t0d) ;debe arrojar #f
-(train? t0e) ;debe arrojar #t
-(train? t1a) ;debe arrojar #f
-(train? t1b) ;debe arrojar #t
 
+#|
+Req16: TDA train - Otras funciones
 
-;; Req16: TDA train - Otras funciones
-
-; Dom = train
-; Rec = positive-number U {0}
-; Recursividad = Natural
+- Descripcion = Función que permite determinar la capacidad máxima de pasajeros del tren.
+- Dom = train
+- Rec = positive-number U {0}
+- Recursividad = Natural
+|#
 
 (define train-capacity
   (lambda (train)
@@ -432,47 +376,42 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
     (cond
       [(null? train) 0]
       [else (train-capacity-int (train-get-pcar train))])))
- 
-;determinar capacidad del tren
-(train-capacity t0) ;debe arrojar 0
-(train-capacity t1) ;debe arrojar 550
 
 
-;; Req17: TDA driver - Constructor
+#|
+Req17: TDA driver - Constructor
 
-; Dom = id (int) X nombre (string) X train-maker (string)
-; Rec = driver
+- Descripcion = Función que permite crear un conductor cuya habilitación de conducción depende del fabricante de tren (train-maker).
+- Dom = id (int) X nombre (string) X train-maker (string)
+- Rec = driver
+|#
 
 (define driver
   (lambda (id nombre train-maker)
     (list id nombre train-maker)))
 
-;Creando drivers
-(define d0 (driver 0 "Juan" "CAF"))
-(define d1 (driver 1 "Alejandro" "Alsthom"))
-(define d2 (driver 2 "Diego" "Alsthom"))
-(define d3 (driver 3 "Pedro" "CAF"))
 
+#|
+Req18: TDA subway - Constructor
 
-;; Req18: TDA subway - Constructor
-
-; Dom = id (int) X nombre (string)
-; Rec = subway
+- Descripcion = Función que permite crear una red de metro.
+- Dom = id (int) X nombre (string)
+- Rec = subway
+|#
 
 (define subway
   (lambda (id nombre)
     (list id nombre)))
 
-;Creando subway
-(define sw0 (subway 0 "Metro de Santiago"))
-(define sw1 (subway 1 "Subte"))
 
+#|
+Req19: TDA subway - Modificador
 
-;; Req19: TDA subway - Modificador
-
-; Dom = sub (subway) X train+ (pueden ser 1 o más trenes)
-; Rec = subway
-; Recursividad = Cola
+- Descripcion = Función que permite añadir trenes a una red de metro.
+- Dom = sub (subway) X train+ (pueden ser 1 o más trenes)
+- Rec = subway
+- Recursividad = Cola
+|#
 
 (define subway-add-train
   (lambda (sub . train)
@@ -485,14 +424,14 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (subway-get-nombre sub)
           (subway-add-train-int train null))))
 
-;Agregando trenes
-(define sw0a (subway-add-train sw0 t1 t2 t0e))
 
+#|
+Req20: TDA subway - Modificador
 
-;; Req20: TDA subway - Modificador
-
-; Dom = sub (subway) X line+ (pueden ser 1 o más líneas)
-; Rec = subway
+- Descripcion = Función que permite añadir líneas a una red de metro.
+- Dom = sub (subway) X line+ (pueden ser 1 o más líneas)
+- Rec = subway
+|#
 
 (define subway-add-line
   (lambda (sub . line)
@@ -501,14 +440,14 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (third sub)
           line)))
 
-;Agregando lineas
-(define sw0b (subway-add-line sw0a l1 l2h))
 
+#|
+Req21: TDA subway - Modificador
 
-;; Req21: TDA subway - Modificador
-
-; Dom = sub (subway) X driver+ (pueden ser 1 o más conductores)
-; Rec = subway
+- Descripcion = Función que permite añadir conductores a una red de metro.
+- Dom = sub (subway) X driver+ (pueden ser 1 o más conductores)
+- Rec = subway
+|#
 
 (define subway-add-driver
   (lambda (sub . driver)
@@ -518,15 +457,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (fourth sub)
           driver)))
 
-;Agregando drivers
-(define sw0c (subway-add-driver sw0b d0 d1 d2 d3))
 
+#|
+Req22: TDA subway - Otras funciones
 
-;; Req22: TDA subway - Otras funciones
-
-; Dom = sub (subway)
-; Rec = String
-; Rec = Natural / Declarativo
+- Descripcion = Función que permite expresar una red de metro en un formato String.
+- Dom = sub (subway)
+- Rec = String
+- Rec = Natural / Declarativo
+|#
 
 (define flatten-list
   (lambda (sub)
@@ -539,14 +478,16 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
   (lambda (sub)
     (apply string-append (map (lambda (x) (if (number? x) (number->string x) x)) (flatten-list sub)))))
 
-;Expresado subway como string
-(subway->string sw0c)
 
+#|
+Req23: TDA subway - Modificador
 
-;; Req23: TDA subway - Modificador
-
-; Dom = sub (subway) X function
-; Rec = subway
+- Descripcion = Función que permite aumentar o reducir los costos de todos los tramos en
+                base a una función especificada por el usuario que arroja un cambio
+                porcentual en los costos.
+- Dom = sub (subway) X function
+- Rec = subway
+|#
 
 (define subway-rise-section-cost
   (lambda (sub function)
@@ -569,14 +510,14 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (subway-rise-section-cost-int (fourth sub) function)
           (fifth sub))))
 
-;Aumentando los costos de las estaciones en un 30%
-(define sw0d (subway-rise-section-cost sw0c (lambda (c) (* c 1.3))))
 
+#|
+Req24: TDA subway - Modificador
 
-;; Req24: TDA subway - Modificador
-
-; Dom = sub (subway) X stationName (String) X time
-; Rec = subway
+- Descripcion = Función que permite modificar el tiempo de parada de una estación.
+- Dom = sub (subway) X stationName (String) X time
+- Rec = subway
+|#
 
 (define subway-set-station-stoptime
   (lambda (sub stationName time)
@@ -608,16 +549,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
           (third sub)
           (subway-set-station-stoptime-int (fourth sub) stationName time)
           (fifth sub))))
-    
-;Cambiando el tiempo de parada de algunas estaciones
-(define sw0e (subway-set-station-stoptime sw0d "Los Héroes" 180))
-(define sw0f (subway-set-station-stoptime sw0e "San Pablo" 50))
 
 
-;; Req25: TDA subway - Modificador
+#|
+Req25: TDA subway - Modificador
 
-; Dom = sub (subway) X trainId (int) X lineID (int)
-; Rec = subway
+- Descripcion = Función que permite asignar un tren a una línea.
+- Dom = sub (subway) X trainId (int) X lineID (int)
+- Rec = subway
+|#
 
 (define subway-assign-train-to-line
   (lambda (sub trainId lineID)
@@ -635,16 +575,16 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
                   (fifth sub)
                   (list (sixth sub) (list (list "idLine" lineID) (list "idTrain" trainId))))])))
     
-;Asignando trenes a líneas
-(define sw0g (subway-assign-train-to-line sw0f 0 1))
-(define sw0h (subway-assign-train-to-line sw0g 2 2))
 
+#|
+Req26: TDA subway - Modificador
 
-;; Req26: TDA subway - Modificador
-
-; Dom = sub (subway) X driverId (int) X trainId (int) X departureTime(String en formato HH:MM:SS de 24 hrs) X departure-station (String) X arrival-station (String)
-; Rec = subway
-; Recursividad = Natural X Cola
+- Descripcion = Función que permite asignar un conductor a un tren en un horario de salida
+                determinado considerando estación de partida y de llegada.
+- Dom = sub (subway) X driverId (int) X trainId (int) X departureTime(String en formato HH:MM:SS de 24 hrs) X departure-station (String) X arrival-station (String)
+- Rec = subway
+- Recursividad = Natural X Cola
+|#
 
 (define subway-assign-driver-to-train
   (lambda (sub driverId trainId departureTime departure-station arrival-station)
@@ -677,17 +617,15 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
                                               (add-train (sixth sub) trainId driverId departureTime departure-station arrival-station null))]
       [else sub])))
     
-;Asignando conductores a trenes
-(define sw0i (subway-assign-driver-to-train sw0h 0 0 "11:00:00" "San Pablo" "Los Héroes"))
-(define sw0j (subway-assign-driver-to-train sw0i 2 2 "12:00:00" "El Llano" "Toesca"))
 
+#|
+Req27: TDA subway - Otras funciones
 
-;; Req27: TDA subway - Otras funciones
-
-; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
-; Rec = station
-; Recursion = Natural
-
+- Descripcion = Función que permite determinar dónde está un tren a partir de una hora indicada del día.
+- Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
+- Rec = station
+- Recursion = Natural
+|#
 
 ; Funcion que busca una linea en un subway
 (define find-line-in-subway
@@ -762,17 +700,16 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
                         (start-station (sixth sub) trainId)
                         (end-station (sixth sub) trainId))))
 
-;preguntando dónde está el tren
-(where-is-train sw0j 0 "11:12:00")
-;Debería estar mas cerca de Las Rejas. Hasta esta hora el tren debería haber recorrido 12km (asumiendo esta unidad), sumando los tiempos de parada en las estaciones
 
+#|
+Req28: TDA subway - Otras funciones
 
-;; Req28: TDA subway - Otras funciones
-
-; Descripcion = Función que permite ir armando el recorrido del tren a partir de una hora especificada y de manera perezosa dejando el registro de la ruta en una lista infinita de paradas.
-; Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
-; Rec = list
-; Recursion = Cola
+- Descripcion = Función que permite ir armando el recorrido del tren a partir de una hora
+                especificada y de manera perezosa.
+- Dom = sub (subway) X trainId (int) X time (String en formato HH:MM:SS d 24 hrs)
+- Rec = list
+- Recursion = Cola
+|#
 
 (define subway-train-path-fn ;Funcion wrapper por recursion
   (lambda (sub trainId time)
@@ -799,6 +736,3 @@ Descripcion: Función que permite determinar si un elemento cumple con las restr
 (define subway-train-path
   (lambda (sub trainId time)
     (force (lazy (subway-train-path-fn sub trainId time)))))
-
-;produciendo la ruta que sigue el tren
-(subway-train-path sw0j 0 "11:30:00")
